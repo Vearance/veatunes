@@ -403,7 +403,7 @@ export default class NavidromeAPI {
         return response.albumInfo2 as AlbumInfo;
     }
 
-    async getStarred2(): Promise<{ starred2: { song?: Song[]; album?: Album[]; artist?: Artist[] } }> {
+    async getStarred(): Promise<{ starred2: { song?: Song[]; album?: Album[]; artist?: Artist[] } }> {
         try {
             const response = await this.makeRequest('getStarred2');
             return response as { starred2: { song?: Song[]; album?: Album[]; artist?: Artist[] } };
@@ -446,11 +446,7 @@ export default class NavidromeAPI {
 // Singleton instance management
 let navidromeInstance: NavidromeAPI | null = null;
 
-type ApiResult =
-    | { ok: true; api: NavidromeAPI }
-    | { ok: false; reason: string };
-
-export function getNavidromeAPI(customConfig?: NavidromeConfig): ApiResult {
+export function getNavidromeAPI(customConfig?: NavidromeConfig): NavidromeAPI | null {
     let config: NavidromeConfig;
     
     if (customConfig) {
@@ -476,21 +472,21 @@ export function getNavidromeAPI(customConfig?: NavidromeConfig): ApiResult {
     }
 
     if (!config.serverUrl || !config.username || !config.password) {
-        return { ok: false, reason: 'incomplete_config' };
+        return null;
     }
 
     if (customConfig || !navidromeInstance) {
         navidromeInstance = new NavidromeAPI(config);
     }
 
-    return { ok: true, api: navidromeInstance };
+    return navidromeInstance;
 }
 
 function getEnvConfig(): NavidromeConfig {
     return {
-        serverUrl: process.env.NEXT_PUBLIC_NAVIDROME_URL || '',
-        username: process.env.NEXT_PUBLIC_NAVIDROME_USERNAME || '',
-        password: process.env.NEXT_PUBLIC_NAVIDROME_PASSWORD || ''
+        serverUrl: process.env.NAVIDROME_URL || '',
+        username: process.env.NAVIDROME_USER || '',
+        password: process.env.NAVIDROME_PASSWORD || ''
     };
 }
 
