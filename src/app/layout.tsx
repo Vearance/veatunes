@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { geistSans, sfpro, satoshi } from '@/lib/fonts';
+import { Providers } from '@/app/components/Providers';
 import { cn } from '@/lib/utils';
 import "./globals.css";
 
@@ -22,11 +23,13 @@ export default function RootLayout({
           geistSans.variable,
           satoshi.variable,
           sfpro.variable,
-          satoshi.className,
+          sfpro.className,
           'font-normal antialiased',
         )}
       >
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

@@ -484,9 +484,9 @@ export function getNavidromeAPI(customConfig?: NavidromeConfig): NavidromeAPI | 
 
 function getEnvConfig(): NavidromeConfig {
     return {
-        serverUrl: process.env.NAVIDROME_URL || '',
-        username: process.env.NAVIDROME_USER || '',
-        password: process.env.NAVIDROME_PASSWORD || ''
+        serverUrl: process.env.NEXT_PUBLIC_NAVIDROME_URL || '',
+        username: process.env.NEXT_PUBLIC_NAVIDROME_USER || '',
+        password: process.env.NEXT_PUBLIC_NAVIDROME_PASSWORD || ''
     };
 }
 
