@@ -188,7 +188,7 @@ export default class NavidromeAPI {
     }
 
     async getUserInfo(): Promise<User> {
-        const response = await this.makeRequest('getUserInfo', { username: this.config.username });
+        const response = await this.makeRequest('getUser', { username: this.config.username });
         const userData = response.user as User;
         return userData;
     }
