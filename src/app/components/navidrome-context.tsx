@@ -27,7 +27,7 @@ interface NavidromeContextType {
 
     // Methods
     searchMusic: (query: string) => Promise<{ artists: Artist[]; albums: Album[]; songs: Song[] }>;
-    search2: (query: string) => Promise<{ artists: Artist[]; albums: Album[]; songs: Song[] }>;
+    search: (query: string) => Promise<{ artists: Artist[]; albums: Album[]; songs: Song[] }>;
     getAlbum: (albumId: string) => Promise<{ album: Album; songs: Song[] }>;
     getArtist: (artistId: string) => Promise<{ artist: Artist; albums: Album[] }>;
     getArtistInfo: (artistId: string) => Promise<ArtistInfo>;
@@ -153,7 +153,7 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
         }
     };
 
-    const search2 = async (query: string) => {
+    const search = async (query: string) => {
         if (!api) {
             setError('Navidrome is not configured. Please go to Settings to configure your Navidrome server.');
             return { artists: [], albums: [], songs: [] };
@@ -163,7 +163,7 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
         try {
             return await api.search(query);
         } catch (err) {
-            console.error('Search2 failed:', err);
+            console.error('Search failed:', err);
             setError('Search failed');
             return { artists: [], albums: [], songs: [] };
         }
@@ -411,7 +411,7 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
 
         // Methods
         searchMusic,
-        search2,
+        search,
         getAlbum,
         getArtist,
         getArtistInfo,

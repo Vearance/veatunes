@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { geistSans, sfpro, satoshi } from '@/lib/fonts';
-import { Providers } from '@/app/components/Providers';
+import { Providers } from '@/app/components/provider';
 import { cn } from '@/lib/utils';
 import "./globals.css";
 

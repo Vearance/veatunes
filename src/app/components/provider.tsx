@@ -1,4 +1,4 @@
-import { NavidromeProvider } from "@/app/components/NavidromeContext";
+import { NavidromeProvider } from "@/app/components/navidrome-context";
 
 export function Providers({ children }: { children: React.ReactNode }) {
     return (
