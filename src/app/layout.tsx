@@ -25,6 +25,7 @@ export default function RootLayout({
           sfpro.variable,
           sfpro.className,
           'font-normal antialiased',
+          'bg-background',
         )}
       >
         <Providers>
