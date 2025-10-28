@@ -19,7 +19,7 @@ export default function Sidebar() {
         );
 
     return (
-        <aside className="w-[259px] bg-foreground text-zinc-200 ml-[10px] mr-[5px] mb-[10px] p-4 rounded-2xl">
+        <aside className="w-[259px] bg-foreground ml-[10px] mr-[5px] mb-[10px] p-4 rounded-2xl">
             <ScrollArea className="h-full">
                 <div className="flex items-center gap-4 px-2 py-2 text-sm text-sidebar mb-2">
                     <Image
