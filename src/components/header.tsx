@@ -69,7 +69,7 @@ export default function Header() {
     }
 
     return (
-        <header className="grid grid-cols-[274px_1fr_274px] items-center mb-8">
+        <header className="grid grid-cols-[274px_1fr_274px] items-center mb-4">
             <div className="flex justify-center">
                 <Link href="/" className="flex items-center">
                     <Image
@@ -93,7 +93,7 @@ export default function Header() {
                 />
             </div>
 
-            <div className="flex items-center justify-end gap-4">
+            <div className="flex items-center justify-end gap-4 pr-5">
                 <TooltipProvider delayDuration={100}>
                     <DropdownMenu>
                         <Tooltip>
