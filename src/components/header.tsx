@@ -62,7 +62,7 @@ export default function Header() {
         return (
             <Link href="/settings">
                 <Button variant="ghost" size="sm" className="gap-2">
-                    <UserRound className="w-4 h-4"/> 
+                    <UserRound className="w-4 h-4" />
                 </Button>
             </Link>
         );
@@ -95,29 +95,54 @@ export default function Header() {
 
             <div className="flex items-center justify-end gap-4">
                 <TooltipProvider delayDuration={100}>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <ChartNoAxesColumn
-                                className="text-secondary cursor-pointer"
-                                size={24}
-                            />
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom" className="text-xs bg-input text-primary">
-                            Activity
-                        </TooltipContent>
-                    </Tooltip>
+                    <DropdownMenu>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <DropdownMenuTrigger asChild>
+                                    <ChartNoAxesColumn
+                                        className="text-secondary cursor-pointer"
+                                        size={24}
+                                    />
+                                </DropdownMenuTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom" className="text-xs bg-input text-primary">
+                                Activity
+                            </TooltipContent>
+                        </Tooltip>
 
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Settings
-                                className="text-secondary cursor-pointer"
-                                size={24}
-                            />
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom" className="text-xs bg-input text-primary">
-                            Settings
-                        </TooltipContent>
-                    </Tooltip>
+                        <DropdownMenuContent className="w-40">
+                            <DropdownMenuItem>Now Playing</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>Server Uptime</DropdownMenuItem>
+                            <DropdownMenuItem>Folders:</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>Quick scan & Full scan</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <DropdownMenu>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <DropdownMenuTrigger asChild>
+                                    <Settings
+                                        className="text-secondary cursor-pointer"
+                                        size={24}
+                                    />
+                                </DropdownMenuTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent side="bottom" className="text-xs bg-input text-primary">
+                                Settings
+                            </TooltipContent>
+                        </Tooltip>
+
+                        <DropdownMenuContent className="w-40">
+                            <DropdownMenuItem>Personal</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>Library</DropdownMenuItem>
+                            <DropdownMenuItem>Missing Files</DropdownMenuItem>
+                            <DropdownMenuItem>About</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </TooltipProvider>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -130,12 +155,10 @@ export default function Header() {
                         </Avatar>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-40">
-                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
                         <DropdownMenuItem>Profile</DropdownMenuItem>
                         <DropdownMenuItem>Settings</DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-red-500">Log out</DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleLogout} className="text-red-500">Log out</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
