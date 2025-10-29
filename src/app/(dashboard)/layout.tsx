@@ -8,10 +8,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <Header />
             <div className="flex flex-1 overflow-hidden">
                 <Sidebar />
-                <main className="flex-1 overflow-y-auto bg-foreground text-zinc-200 ml-[5px] mr-[10px] mb-[10px] p-6 rounded-2xl">
-                    <ScrollArea className="h-full">
+                <main className="flex-1 overflow-y-auto bg-foreground ml-[5px] mr-[10px] mb-[10px] p-6 rounded-2xl">
+                    {/* <ScrollArea className="h-full"> */}
                         {children}
-                    </ScrollArea>
+                    {/* </ScrollArea> */}
                 </main>
             </div>
         </div>
