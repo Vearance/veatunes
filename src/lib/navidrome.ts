@@ -130,6 +130,8 @@ export default class NavidromeAPI {
     private config: NavidromeConfig;
     private clientName = 'veatunes';
     private version = '1.16.0';
+    private coverArtUrlCache: Map<string, { url: string; timestamp: number }> = new Map();
+    private readonly COVER_ART_CACHE_TTL = 300000; // 5 minutes in milliseconds
 
     constructor(config: NavidromeConfig) {
         this.config = config;
@@ -307,6 +309,16 @@ export default class NavidromeAPI {
     }
 
     getCoverArtUrl(coverArtId: string, size?: number): string {
+        // Create cache key based on coverArtId and size
+        const cacheKey = `${coverArtId}:${size || 'default'}`;
+        const now = Date.now();
+        
+        // Check if we have a valid cached URL
+        const cached = this.coverArtUrlCache.get(cacheKey);
+        if (cached && (now - cached.timestamp) < this.COVER_ART_CACHE_TTL) {
+            return cached.url;
+        }
+
         const salt = this.generateSalt();
         const token = this.generateToken(this.config.password, salt);
 
@@ -323,7 +335,23 @@ export default class NavidromeAPI {
             params.append('size', size.toString());
         }
 
-        return `${this.config.serverUrl}/rest/getCoverArt?${params.toString()}`;
+        const url = `${this.config.serverUrl}/rest/getCoverArt?${params.toString()}`;
+        
+        // Cache the generated URL
+        this.coverArtUrlCache.set(cacheKey, { url, timestamp: now });
+        
+        // Clean up old cache entries if cache grows too large
+        if (this.coverArtUrlCache.size > 1000) {
+            const entriesToDelete: string[] = [];
+            for (const [key, value] of this.coverArtUrlCache.entries()) {
+                if (now - value.timestamp >= this.COVER_ART_CACHE_TTL) {
+                    entriesToDelete.push(key);
+                }
+            }
+            entriesToDelete.forEach(key => this.coverArtUrlCache.delete(key));
+        }
+        
+        return url;
     }
 
     async star(id: string, type: 'song' | 'album' | 'artist'): Promise<void> {
