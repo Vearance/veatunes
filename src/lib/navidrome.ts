@@ -132,6 +132,7 @@ export default class NavidromeAPI {
     private version = '1.16.0';
     private coverArtUrlCache: Map<string, { url: string; timestamp: number }> = new Map();
     private readonly COVER_ART_CACHE_TTL = 300000; // 5 minutes in milliseconds
+    private readonly MAX_CACHE_SIZE = 500; // Maximum number of cached URLs
 
     constructor(config: NavidromeConfig) {
         this.config = config;
@@ -337,19 +338,17 @@ export default class NavidromeAPI {
 
         const url = `${this.config.serverUrl}/rest/getCoverArt?${params.toString()}`;
         
+        // Implement simple LRU-like eviction: if cache is full, remove oldest entry
+        if (this.coverArtUrlCache.size >= this.MAX_CACHE_SIZE) {
+            // Map maintains insertion order, so first key is the oldest
+            const firstKey = this.coverArtUrlCache.keys().next().value;
+            if (firstKey) {
+                this.coverArtUrlCache.delete(firstKey);
+            }
+        }
+        
         // Cache the generated URL
         this.coverArtUrlCache.set(cacheKey, { url, timestamp: now });
-        
-        // Clean up old cache entries if cache grows too large
-        if (this.coverArtUrlCache.size > 1000) {
-            const entriesToDelete: string[] = [];
-            for (const [key, value] of this.coverArtUrlCache.entries()) {
-                if (now - value.timestamp >= this.COVER_ART_CACHE_TTL) {
-                    entriesToDelete.push(key);
-                }
-            }
-            entriesToDelete.forEach(key => this.coverArtUrlCache.delete(key));
-        }
         
         return url;
     }

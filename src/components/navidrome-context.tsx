@@ -81,7 +81,7 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
                 api.getAlbums('newest', 50)
             ]);
 
-            // Optimize deduplication using a Set for O(n) complexity instead of O(n²)
+            // Optimize deduplication using a Map for O(n) complexity instead of O(n²)
             const albumMap = new Map<string, Album>();
             for (const album of [...recentAlbums, ...newestAlbums]) {
                 if (!albumMap.has(album.id)) {
