@@ -8,6 +8,7 @@ import ArtistCard from "@/components/artist-card"
 import AlbumCard from "@/components/album-card"
 import { Album, Artist, Playlist } from "@/lib/navidrome"
 import { useNavidrome } from "@/components/navidrome-context"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const mockSongs = [
     { id: "1", title: "Song 1", artist: "Chris James" },
@@ -64,23 +65,6 @@ export default function Home() {
     const [playlists, setPlaylists] = useState<Playlist[]>([])
     const [loading, setLoading] = useState(true)
 
-    // useEffect(() => {
-    //     const fetchAlbums = async () => {
-    //         if (!api || !isConnected) return
-
-    //         try {
-    //             const result = await api.getAlbums("newest", 20)
-    //             setAlbums(result)
-    //         } catch (error) {
-    //             console.error("Failed to fetch albums:", error)
-    //         } finally {
-    //             setLoading(false)
-    //         }
-    //     }
-
-    //     fetchAlbums()
-    // }, [api, isConnected])
-
     useEffect(() => {
         if (!api || !isConnected) return
 
@@ -105,6 +89,18 @@ export default function Home() {
         fetchAll()
     }, [api, isConnected])
 
+    const renderSkeletons = (count: number) =>
+        Array.from({ length: count }).map((_, i) => (
+            <div
+                key={i}
+                className="w-[170px] h-[253px] flex flex-col space-y-2 animate-pulse"
+            >
+                <Skeleton className="w-[170px] h-[170px] rounded-lg bg-zinc-800" />
+                <Skeleton className="h-2 w-3/4 bg-zinc-700" />
+                <Skeleton className="h-1.5 w-1/2 bg-zinc-700" />
+            </div>
+        ))
+
 
     return (
         <div className="space-y-8 px-2">
@@ -115,7 +111,7 @@ export default function Home() {
             </HorizontalSection>
             <HorizontalSection title="Playlists">
                 {loading ? (
-                    <p className="text-zinc-400">Loading playlists...</p>
+                    renderSkeletons(8)
                 ) : playlists.length === 0 ? (
                     <p className="text-zinc-400">No playlists found.</p>
                 ) : (
@@ -124,7 +120,7 @@ export default function Home() {
             </HorizontalSection>
             <HorizontalSection title="Artists">
                 {loading ? (
-                    <p className="text-zinc-400">Loading artists...</p>
+                    renderSkeletons(8)
                 ) : artists.length === 0 ? (
                     <p className="text-zinc-400">No artists found.</p>
                 ) : (
@@ -133,7 +129,7 @@ export default function Home() {
             </HorizontalSection>
             <HorizontalSection title="Albums">
                 {loading ? (
-                    <p className="text-zinc-400">Loading albums...</p>
+                    renderSkeletons(8)
                 ) : albums.length === 0 ? (
                     <p className="text-zinc-400">No albums found.</p>
                 ) : (
