@@ -1,5 +1,9 @@
 import ColorThief from "colorthief";
 
+/**
+ * Extracts the dominant color from an image URL or HTMLImageElement.
+ * Returns it as an RGB string, e.g. "rgb(120, 90, 200)".
+ */
 export async function extractDominantColor(imageUrl: string): Promise<string | null> {
     return new Promise((resolve) => {
         const img = new Image();
