@@ -1,16 +1,16 @@
 import Image from "next/image";
 
-interface Playlist {
-    id: string;
-    title: string;
-    songCount?: number;
-    songs?: string[];
-    coverUrl?: string;
+interface PlaylistCardProps {
+    playlist: {
+        id: string;
+        title: string;
+        songCount?: number;
+        songs?: string[];
+        coverUrl?: string;
+    }
 }
 
-interface PlaylistCardProps {
-    playlist: Playlist;
-}
+// TODO: apply colorExtraction
 
 export default function PlaylistCard({ playlist }: PlaylistCardProps) {
     const count = playlist.songCount ?? playlist.songs?.length ?? 0;
@@ -38,7 +38,7 @@ export default function PlaylistCard({ playlist }: PlaylistCardProps) {
                 </div>
             </div>
 
-            <div className="mt-2 flex items-center justify-between gap-3 mb-1">
+            <div className="mt-2 flex items-center justify-between mb-1">
                 <p className="text-sm font-medium text-primary truncate">
                     {playlist.title}
                 </p>
