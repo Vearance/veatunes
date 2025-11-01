@@ -37,7 +37,7 @@ export default function HorizontalSection({ title, children }: HorizontalSection
                         variant="ghost"
                         size="icon"
                         onClick={() => scroll("left")}
-                        className="h-8 w-8 text-zinc-300 hover:bg-zinc-700"
+                        className="h-8 w-8 text-zinc-400 hover:text-zinc-300 hover:bg-transparent"
                     >
                         <ArrowLeft size={18} />
                     </Button>
@@ -45,7 +45,7 @@ export default function HorizontalSection({ title, children }: HorizontalSection
                         variant="ghost"
                         size="icon"
                         onClick={() => scroll("right")}
-                        className="h-8 w-8 text-zinc-300 hover:bg-zinc-700"
+                        className="h-8 w-8 text-zinc-400 hover:text-zinc-300 hover:bg-transparent"
                     >
                         <ArrowRight size={18} />
                     </Button>
@@ -54,7 +54,7 @@ export default function HorizontalSection({ title, children }: HorizontalSection
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 text-zinc-300 hover:bg-zinc-700"
+                                className="h-8 w-8 text-zinc-400 hover:text-zinc-300 hover:bg-transparent"
                             >
                                 <MoreHorizontal size={18} />
                             </Button>
