@@ -17,7 +17,6 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -31,12 +30,10 @@ import {
 export default function Header() {
     const { api, isConnected } = useNavidrome();
     const [userInfo, setUserInfo] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchUserInfo = async () => {
             if (!api || !isConnected) {
-                setLoading(false);
                 return;
             }
 
@@ -45,8 +42,6 @@ export default function Header() {
                 setUserInfo(user);
             } catch (error) {
                 console.error('Failed to fetch user info:', error);
-            } finally {
-                setLoading(false);
             }
         };
 
