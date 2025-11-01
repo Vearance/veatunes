@@ -89,10 +89,10 @@ export default function Home() {
         fetchAll()
     }, [api, isConnected])
 
-    const renderSkeletons = (count: number) =>
+    const renderAlbumSkeletons = (count: number) =>
         Array.from({ length: count }).map((_, i) => (
             <div
-                key={i}
+                key={`album-skel-${i}`}
                 className="w-[170px] h-[253px] flex flex-col space-y-2 animate-pulse"
             >
                 <Skeleton className="w-[170px] h-[170px] rounded-lg bg-zinc-800" />
@@ -101,6 +101,29 @@ export default function Home() {
             </div>
         ))
 
+    const renderArtistSkeletons = (count: number) =>
+        Array.from({ length: count }).map((_, i) => (
+            <div
+                key={`artist-skel-${i}`}
+                className="w-[170px] h-[253px] flex flex-col items-center space-y-2 animate-pulse"
+            >
+                <Skeleton className="w-[170px] h-[170px] rounded-full bg-zinc-800" />
+                <Skeleton className="h-2 w-3/4 bg-zinc-700" />
+                <Skeleton className="h-1.5 w-1/2 bg-zinc-700" />
+            </div>
+        ))
+
+    const renderPlaylistSkeletons = (count: number) =>
+        Array.from({ length: count }).map((_, i) => (
+            <div
+                key={`playlist-skel-${i}`}
+                className="w-[170px] h-[253px] flex flex-col space-y-2 animate-pulse"
+            >
+                <Skeleton className="w-[170px] h-[170px] rounded-lg bg-zinc-800" />
+                <Skeleton className="h-2 w-3/4 bg-zinc-700" />
+                <Skeleton className="h-1.5 w-1/2 bg-zinc-700" />
+            </div>
+        ))
 
     return (
         <div className="space-y-8 px-2">
@@ -111,7 +134,7 @@ export default function Home() {
             </HorizontalSection>
             <HorizontalSection title="Playlists">
                 {loading ? (
-                    renderSkeletons(8)
+                    renderPlaylistSkeletons(8)
                 ) : playlists.length === 0 ? (
                     <p className="text-zinc-400">No playlists found.</p>
                 ) : (
@@ -120,7 +143,7 @@ export default function Home() {
             </HorizontalSection>
             <HorizontalSection title="Artists">
                 {loading ? (
-                    renderSkeletons(8)
+                    renderArtistSkeletons(8)
                 ) : artists.length === 0 ? (
                     <p className="text-zinc-400">No artists found.</p>
                 ) : (
@@ -129,7 +152,7 @@ export default function Home() {
             </HorizontalSection>
             <HorizontalSection title="Albums">
                 {loading ? (
-                    renderSkeletons(8)
+                    renderAlbumSkeletons(8)
                 ) : albums.length === 0 ? (
                     <p className="text-zinc-400">No albums found.</p>
                 ) : (
