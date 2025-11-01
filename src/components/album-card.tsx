@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { Album } from "@/lib/navidrome"
 import { useNavidrome } from "@/components/navidrome-context"
 
@@ -14,7 +15,10 @@ export default function AlbumCard({ album }: AlbumCardProps) {
         : "/albumplaceholder.svg"
 
     return (
-        <div className="w-[170px] h-[253px] flex flex-col cursor-pointer group">
+        <Link
+            href={`/album/${album.id}`}
+            className="w-[170px] h-[253px] flex flex-col cursor-pointer group"
+        >
             <div className="relative w-[170px] h-[170px] overflow-hidden rounded-lg bg-zinc-800">
                 <Image
                     src={coverUrl || "/albumplaceholder.svg"}
@@ -31,6 +35,6 @@ export default function AlbumCard({ album }: AlbumCardProps) {
                     {album.artist || "Unknown Artist"}
                 </p>
             </div>
-        </div>
+        </Link>
     )
 }
