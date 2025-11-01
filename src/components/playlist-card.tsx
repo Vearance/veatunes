@@ -1,20 +1,38 @@
-import Image from "next/image";
+"use client"
+
+import { useEffect, useState } from "react"
+import Image from "next/image"
+import { Playlist } from "@/lib/navidrome"
+import { useNavidrome } from "@/components/navidrome-context"
 
 interface PlaylistCardProps {
-    playlist: {
-        id: string;
-        title: string;
-        songCount?: number;
-        songs?: string[];
-        coverUrl?: string;
-    }
+    playlist: Playlist
 }
 
 // TODO: apply colorExtraction
 
 export default function PlaylistCard({ playlist }: PlaylistCardProps) {
-    const count = playlist.songCount ?? playlist.songs?.length ?? 0;
-    const previewTitles = playlist.songs?.slice(0, 3).join(", ") ?? null;
+    const { api } = useNavidrome()
+    const [titles, setTitles] = useState<string[] | null>(null);
+
+    const coverUrl = playlist.coverArt
+        ? api?.getCoverArtUrl(playlist.coverArt, 300)
+        : "/songplaceholder.svg"
+
+    useEffect(() => {
+        if (!api) return;
+        api.getPlaylist(playlist.id)
+            .then(res => {
+                const songTitles = res.songs.map(s => s.title);
+                setTitles(songTitles.slice(0, 3));
+            })
+            .catch(err => {
+                console.error("Failed to load playlist songs", err);
+                setTitles(null);
+            });
+    }, [api, playlist.id]);
+
+    const previewTitles = titles ? titles.join(", ") : null;
 
     return (
         <div className="w-[170px] h-[253px] flex flex-col cursor-pointer group">
@@ -30,8 +48,8 @@ export default function PlaylistCard({ playlist }: PlaylistCardProps) {
 
                 <div className="relative w-[170px] h-[170px] rounded-lg overflow-hidden bg-zinc-800">
                     <Image
-                        src={playlist.coverUrl || "/songplaceholder.svg"}
-                        alt={playlist.title}
+                        src={coverUrl || "/songplaceholder.svg"}
+                        alt={`Cover art for ${playlist.name || "Unknown Playlist"}`}
                         fill
                         className="object-cover transition-transform duration-200 group-hover:scale-105"
                     />
@@ -40,15 +58,15 @@ export default function PlaylistCard({ playlist }: PlaylistCardProps) {
 
             <div className="mt-2 flex items-center justify-between mb-1">
                 <p className="text-sm font-medium text-primary truncate">
-                    {playlist.title}
+                    {playlist.name}
                 </p>
                 <p className="text-sm text-zinc-400 flex-shrink-0 ml-2">
-                    {count}
+                    {playlist.songCount}
                 </p>
             </div>
 
             <p className="text-xs text-secondary line-clamp-2">
-                {previewTitles ? `${previewTitles}${count > 3 ? ", and more" : ""}` : "No songs"}
+                {previewTitles ? `${previewTitles}${playlist.songCount > 3 ? ", and more" : ""}` : "No songs"}
             </p>
 
         </div>
