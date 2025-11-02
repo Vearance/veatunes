@@ -18,3 +18,26 @@ export function formatDuration(seconds: number): string {
 
     return formatted
 }
+
+/**
+ * Converts a duration in seconds to a human-readable string like "1 hr 15 min".
+ * Examples:
+ * - 45 → "45 sec"
+ * - 125 → "2 min 5 sec"
+ * - 3671 → "1 hr 1 min 11 sec"
+ */
+export function formatDurationVerbose(seconds: number): string {
+    if (isNaN(seconds) || seconds < 0) return "0 sec";
+
+    const hrs = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+
+    const parts: string[] = [];
+
+    if (hrs > 0) parts.push(`${hrs} hr`);
+    if (mins > 0) parts.push(`${mins} min`);
+    if (secs > 0 && hrs === 0) parts.push(`${secs} sec`);
+
+    return parts.join(" ") || "0 sec";
+}
