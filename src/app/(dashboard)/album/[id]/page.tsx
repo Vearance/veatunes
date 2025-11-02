@@ -14,7 +14,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Album, Song } from "@/lib/navidrome"
 import { formatDuration, formatDurationVerbose } from "@/lib/song-utils"
-import { Heart, Shuffle, MoreHorizontal } from "lucide-react"
+import { Shuffle, MoreHorizontal } from "lucide-react"
 
 export default function AlbumDetailPage() {
     const { id } = useParams<{ id: string }>()
@@ -119,13 +119,14 @@ export default function AlbumDetailPage() {
                         <Button
                             asChild
                             variant="ghost"
-                            className="h-8 w-8 text-border hover:text-secondary hover:bg-transparent cursor-pointer p-0"
+                            className="h-8 w-8 text-border hover:text-secondary hover:bg-transparent cursor-pointer select-none p-0"
                         >
                             <Image
                                 src="/icons/playtosc.svg"
                                 alt="Play"
                                 width={24}
                                 height={24}
+                                draggable={false}
                             />
                         </Button>
 
@@ -141,12 +142,25 @@ export default function AlbumDetailPage() {
                             asChild
                             variant="ghost"
                             onClick={() => setFavorited(!favorited)}
-                            className="text-border hover:text-secondary hover:bg-transparent cursor-pointer p-0"
+                            className="hover:opacity-100 transition hover:bg-transparent cursor-pointer select-none p-0"
                         >
                             {favorited ? (
-                                <Heart size={24} className="fill-secondary" />
+                                <Image
+                                    src="/icons/heartfilled.svg"
+                                    alt="Heart"
+                                    width={24}
+                                    height={24}
+                                    draggable={false}
+                                />
                             ) : (
-                                <Heart size={24} />
+                                <Image
+                                    src="/icons/heart.svg"
+                                    alt="Heart"
+                                    width={24}
+                                    height={24}
+                                    draggable={false}
+                                    className="opacity-80"
+                                />
                             )}
                         </Button>
 
@@ -160,6 +174,7 @@ export default function AlbumDetailPage() {
                                 alt="Add Queue"
                                 width={22}
                                 height={22}
+                                draggable={false}
                                 className="opacity-80"
                             />
                         </Button>
@@ -188,10 +203,14 @@ export default function AlbumDetailPage() {
                 <div className="flex items-center justify-between text-sm text-zinc-500 mb-2 px-2">
                     <span className="w-6 text-right">#</span>
                     <span className="flex-1 ml-3">Title</span>
-                    <span className="text-right">Duration</span>
+                    <span className="text-right mr-12">Duration</span>
                 </div>
 
-                <div className="space-y-2">
+
+                <Separator className="my-1.5 h-[2px] bg-border/75" />
+
+
+                <div>
                     {songs.map((song) => (
                         <div
                             key={song.id}
@@ -205,26 +224,39 @@ export default function AlbumDetailPage() {
                                     {song.title}
                                 </span>
                             </div>
-                            <div className="flex items-center gap-3 text-zinc-400 text-sm">
+
+                            <div className="flex items-center gap-3 text-sm text-zinc-400">
+                                <span className="text-right">
+                                    {formatDuration(song.duration)}
+                                </span>
+
                                 <Button
+                                    asChild
                                     variant="ghost"
-                                    size="icon"
-                                    className="p-1 hover:bg-transparent"
+                                    className="hover:opacity-100 transition hover:bg-transparent cursor-pointer ml-4 p-0"
                                     onClick={(e) => {
-                                        e.stopPropagation();
-                                        handleSongFavorite(song);
+                                        e.stopPropagation()
+                                        handleSongFavorite(song)
                                     }}
                                 >
-                                    <Heart
-                                        size={16}
-                                        className={`transition-colors ${song.starred
-                                                ? "text-red-500 fill-red-500"
-                                                : "text-zinc-500"
-                                            }`}
-                                    />
+                                    {song.starred ? (
+                                        <Image
+                                            src="/icons/heartfilled.svg"
+                                            alt="Heart"
+                                            width={18}
+                                            height={18}
+                                            className=""
+                                        />
+                                    ) : (
+                                        <Image
+                                            src="/icons/heart.svg"
+                                            alt="Heart"
+                                            width={18}
+                                            height={18}
+                                            className="opacity-80"
+                                        />
+                                    )}
                                 </Button>
-
-                                <span>{formatDuration(song.duration)}</span>
                             </div>
                         </div>
                     ))}
