@@ -4,22 +4,32 @@ import { useEffect, useState } from "react"
 import Image from "next/image"
 import { useParams } from "next/navigation"
 import { useNavidrome } from "@/components/navidrome-context"
+import { Button } from "@/components/ui/button"
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+    DropdownMenuContent,
+    DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
 import { Album, Song } from "@/lib/navidrome"
-import { formatDuration } from "@/lib/song-utils"
+import { formatDuration, formatDurationVerbose } from "@/lib/song-utils"
+import { Heart, Shuffle, MoreHorizontal } from "lucide-react"
 
 export default function AlbumDetailPage() {
     const { id } = useParams<{ id: string }>()
-    const { api, isConnected } = useNavidrome()
+    const { api, isConnected, getAlbum, starItem, unstarItem } = useNavidrome()
     const [album, setAlbum] = useState<Album | null>(null)
     const [songs, setSongs] = useState<Song[]>([])
     const [loading, setLoading] = useState(true)
+    const [favorited, setFavorited] = useState(false)
 
     useEffect(() => {
-        if (!api || !isConnected || !id) return
+        if (!isConnected || !id) return
 
         const fetchAlbum = async () => {
             try {
-                const { album: albumInfo, songs: albumSongs } = await api.getAlbum(id)
+                const { album: albumInfo, songs: albumSongs } = await getAlbum(id)
                 setAlbum(albumInfo)
                 setSongs(albumSongs)
             } catch (error) {
@@ -30,7 +40,46 @@ export default function AlbumDetailPage() {
         }
 
         fetchAlbum()
-    }, [api, isConnected, id])
+    }, [getAlbum, isConnected, id])
+
+    const handleAlbumFavorite = async () => {
+        if (!api || !album) return
+        try {
+            if (favorited) {
+                await unstarItem(album.id, "album")
+                setFavorited(false)
+            } else {
+                await starItem(album.id, "album")
+                setFavorited(true)
+            }
+        } catch (error) {
+            console.error("Failed to toggle favorite:", error)
+        }
+    }
+
+    const handleSongFavorite = async (song: Song) => {
+        if (!api) return
+        try {
+            if (song.starred) {
+                await unstarItem(song.id, "song")
+                setSongs((prev) =>
+                    prev.map((s) =>
+                        s.id === song.id ? { ...s, starred: undefined } : s
+                    )
+                )
+            } else {
+                await starItem(song.id, "song")
+                setSongs((prev) =>
+                    prev.map((s) =>
+                        s.id === song.id ? { ...s, starred: "true" } : s
+                    )
+                )
+            }
+        } catch (error) {
+            console.error("Failed to toggle song favorite:", error)
+        }
+    }
+
 
     if (loading) return <p className="text-zinc-400 p-4">Loading album...</p>
     if (!album) return <p className="text-zinc-400 p-4">Album not found.</p>
@@ -38,6 +87,9 @@ export default function AlbumDetailPage() {
     const coverUrl = album.coverArt
         ? api?.getCoverArtUrl(album.coverArt, 300)
         : "/albumplaceholder.svg"
+
+    const totalDuration = songs.reduce((sum, s) => sum + (s.duration ?? 0), 0)
+    const releaseYear = album.year || "Unknown Year"
 
     return (
         <div className="p-4 space-y-6">
@@ -47,31 +99,137 @@ export default function AlbumDetailPage() {
                         src={coverUrl || "/albumplaceholder.svg"}
                         alt={`Cover art for ${album.name || "Unknown Album"}`}
                         fill
-                        className="object-cover transition-transform duration-200 hover:scale-105"
+                        className="object-cover"
                     />
                 </div>
-                <div>
-                    <h1 className="text-2xl font-semibold text-zinc-100">{album.name}</h1>
-                    <p className="text-zinc-400">{album.artist || "Unknown Artist"}</p>
-                    <p className="text-sm text-zinc-500 mt-1">{album.songCount} songs</p>
+                <div className="flex flex-col justify-between h-[170px]">
+                    <div>
+                        <h1 className="text-2xl font-semibold text-zinc-100">
+                            {album.name}
+                        </h1>
+                        <p className="text-zinc-400">
+                            {album.artist || "Unknown Artist"}
+                        </p>
+                        <p className="text-sm text-zinc-500 mt-1">
+                            {releaseYear} • {album.songCount} songs •{" "}
+                            {formatDurationVerbose(totalDuration)}
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-6 mt-4">
+                        <Button
+                            asChild
+                            variant="ghost"
+                            className="h-8 w-8 text-border hover:text-secondary hover:bg-transparent cursor-pointer p-0"
+                        >
+                            <Image
+                                src="/icons/playtosc.svg"
+                                alt="Play"
+                                width={24}
+                                height={24}
+                            />
+                        </Button>
+
+                        <Button
+                            asChild
+                            variant="ghost"
+                            className="text-border hover:text-secondary hover:bg-transparent cursor-pointer p-0"
+                        >
+                            <Shuffle size={24} />
+                        </Button>
+
+                        <Button
+                            asChild
+                            variant="ghost"
+                            onClick={() => setFavorited(!favorited)}
+                            className="text-border hover:text-secondary hover:bg-transparent cursor-pointer p-0"
+                        >
+                            {favorited ? (
+                                <Heart size={24} className="fill-secondary" />
+                            ) : (
+                                <Heart size={24} />
+                            )}
+                        </Button>
+
+                        <Button
+                            asChild
+                            variant="ghost"
+                            className="hover:bg-transparent hover:opacity-100 transition cursor-pointer p-0"
+                        >
+                            <Image
+                                src="/icons/addtoqueue.svg"
+                                alt="Add Queue"
+                                width={22}
+                                height={22}
+                                className="opacity-80"
+                            />
+                        </Button>
+
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    asChild
+                                    variant="ghost"
+                                    className="text-border hover:text-secondary hover:bg-transparent cursor-pointer p-0"
+                                >
+                                    <MoreHorizontal size={24} />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuItem>Add to Playlist</DropdownMenuItem>
+                                <DropdownMenuItem>Go to Artist</DropdownMenuItem>
+                                <DropdownMenuItem>Share</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
                 </div>
             </div>
 
-            <div className="space-y-2">
-                {songs.map((song) => (
-                    <div
-                        key={song.id}
-                        className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-800 transition-colors"
-                    >
-                        <span className="text-zinc-200 truncate">
-                            {song.title}
-                        </span>
-                        <span className="text-zinc-400 text-sm">
-                            {formatDuration(song.duration)}
-                        </span>
-                    </div>
-                ))}
+            <div>
+                <div className="flex items-center justify-between text-sm text-zinc-500 mb-2 px-2">
+                    <span className="w-6 text-right">#</span>
+                    <span className="flex-1 ml-3">Title</span>
+                    <span className="text-right">Duration</span>
+                </div>
+
+                <div className="space-y-2">
+                    {songs.map((song) => (
+                        <div
+                            key={song.id}
+                            className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-800 transition-colors group"
+                        >
+                            <div className="flex items-center gap-3 min-w-0">
+                                <span className="text-zinc-500 text-sm w-6 text-right">
+                                    {song.track ?? 0}
+                                </span>
+                                <span className="text-zinc-200 truncate">
+                                    {song.title}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-3 text-zinc-400 text-sm">
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="p-1 hover:bg-transparent"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleSongFavorite(song);
+                                    }}
+                                >
+                                    <Heart
+                                        size={16}
+                                        className={`transition-colors ${song.starred
+                                                ? "text-red-500 fill-red-500"
+                                                : "text-zinc-500"
+                                            }`}
+                                    />
+                                </Button>
+
+                                <span>{formatDuration(song.duration)}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
-    )
+    );
 }
