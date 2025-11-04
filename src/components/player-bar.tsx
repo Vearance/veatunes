@@ -10,12 +10,13 @@ import { formatDuration } from "@/lib/song-utils";
 export function PlayerBar() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(30);
+    const [muted, setMuted] = useState(false);
 
     const handlePlayPause = () => setIsPlaying(!isPlaying);
+    const handleMute = () => setMuted(!muted);
 
     return (
         <div className="fixed bottom-0 left-0 right-0 z-50 m-[26px] max-h-[90px] bg-playerbar backdrop-blur-xs rounded-2xl p-2.5 grid grid-cols-[375px_1fr_375px] items-center">
-            
             <div className="flex items-center gap-4">
                 <div className="relative w-[70px] h-[70px] rounded-xl overflow-hidden bg-zinc-800 shrink-0">
                     <Image
@@ -129,26 +130,59 @@ export function PlayerBar() {
                 </div>
             </div>
 
-            <div className="flex items-center justify-end gap-3 mr-3">
+            <div className="flex items-center justify-end gap-5 mr-3">
+                <div className="flex items-center gap-3">
+                    <Button
+                        asChild
+                        variant="ghost"
+                        onClick={handleMute}
+                        className="h-5 w-5 p-0 hover:bg-transparent cursor-pointer select-none"
+                    >
+                        <Image
+                            src={muted ? "/icons/mute.svg" : "/icons/volume.svg"}
+                            alt={muted ? "Muted" : "Volume"}
+                            width={22}
+                            height={22}
+                            draggable={false}
+                        />
+                    </Button>
+                    <Slider
+                        defaultValue={[60]}
+                        max={100}
+                        step={1}
+                        className="w-[80px] **:data-[slot=slider-track]:h-1 **:data-[slot=slider-thumb]:w-2 **:data-[slot=slider-thumb]:h-2"
+                    />
+                </div>
+
+                <div className="w-[1.5px] h-6 bg-muted" />
+
                 <Button
                     asChild
                     variant="ghost"
                     className="h-5 w-5 p-0 hover:bg-transparent cursor-pointer select-none"
                 >
                     <Image
-                        src="/icons/volume.svg"
-                        alt="Volume"
+                        src="/icons/queue.svg"
+                        alt="Queue"
                         width={22}
                         height={22}
                         draggable={false}
                     />
                 </Button>
-                <Slider
-                    defaultValue={[60]}
-                    max={100}
-                    step={1}
-                    className="w-[80px] **:data-[slot=slider-track]:h-1 **:data-[slot=slider-thumb]:w-2 **:data-[slot=slider-thumb]:h-2"
-                />
+
+                <Button
+                    asChild
+                    variant="ghost"
+                    className="h-5 w-5 p-0 hover:bg-transparent cursor-pointer select-none"
+                >
+                    <Image
+                        src="/icons/more-hori.svg"
+                        alt="More"
+                        width={22}
+                        height={22}
+                        draggable={false}
+                    />
+                </Button>
             </div>
         </div>
     );
