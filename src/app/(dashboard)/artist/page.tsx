@@ -4,60 +4,61 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useNavidrome } from "@/components/navidrome-context";
-import { Album } from "@/lib/navidrome";
+import { Artist } from "@/lib/navidrome";
 
-export default function AlbumPage() {
+export default function ArtistPage() {
     const { api, isConnected } = useNavidrome();
-    const [albums, setAlbums] = useState<Album[]>([]);
+    const [artists, setArtists] = useState<Artist[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (!isConnected || !api) return;
 
-        const fetchAlbums = async () => {
+        const fetchArtists = async () => {
             try {
-                const res = await api.getAlbums("newest");
-                setAlbums(res);
+                const res = await api.getArtists();
+                setArtists(res);
             } catch (error) {
-                console.error("Failed to fetch albums:", error);
+                console.error("Failed to fetch artists:", error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchAlbums();
+        fetchArtists();
     }, [api, isConnected]);
 
-    if (loading) return <p className="text-zinc-400 p-4">Loading albums...</p>;
-    if (!albums.length) return <p className="text-zinc-400 p-4">No albums found.</p>;
+    if (loading) return <p className="text-zinc-400 p-4">Loading artists...</p>;
+    if (!artists.length)
+        return <p className="text-zinc-400 p-4">No artists found.</p>;
 
     return (
         <div className="p-6">
             <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-1">
-                {albums.map((album) => {
-                    const coverUrl = album.coverArt
-                        ? api?.getCoverArtUrl(album.coverArt, 300)
-                        : "/albumplaceholder.svg";
+                {artists.map((artist) => {
+                    const coverUrl = artist.coverArt
+                        ? api?.getCoverArtUrl(artist.coverArt, 300)
+                        : "/artistplaceholder.svg";
 
                     return (
                         <Link
-                            key={album.id}
-                            href={`/album/${album.id}`}
+                            key={artist.id}
+                            href={`/artist/${artist.id}`}
                             className="group flex flex-col items-center text-center rounded-lg overflow-hidden p-1">
                             <div className="relative w-full aspect-square rounded-md overflow-hidden bg-zinc-800">
                                 <Image
-                                    src={coverUrl || "/albumplaceholder.svg"}
-                                    alt={`Cover art for ${ album.name || "Unknown Album"}`}
+                                    src={coverUrl || "/artistplaceholder.svg"}
+                                    alt={`Cover art for ${ artist.name || "Unknown Artist"}`}
                                     fill
                                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                                     draggable={false}
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end items-center p-4">
                                     <p className="text-sm font-medium text-zinc-100 truncate w-full text-center">
-                                        {album.name}
+                                        {artist.name}
                                     </p>
                                     <p className="text-xs text-zinc-400 truncate w-full text-center">
-                                        {album.artist || "Unknown Artist"}
+                                        {artist.albumCount || 0} albums
                                     </p>
                                 </div>
                             </div>
