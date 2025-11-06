@@ -141,7 +141,7 @@ export default function AlbumDetailPage() {
                         <Button
                             asChild
                             variant="ghost"
-                            onClick={() => setFavorited(!favorited)}
+                            onClick={handleAlbumFavorite}
                             className="hover:opacity-100 transition hover:bg-transparent cursor-pointer select-none p-0"
                         >
                             {favorited ? (
