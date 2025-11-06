@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import Image from "next/image"
-import { useParams } from "next/navigation"
-import { useNavidrome } from "@/components/navidrome-context"
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import { useParams } from "next/navigation";
+import { useNavidrome } from "@/components/navidrome-context";
+import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -12,9 +12,9 @@ import {
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import { Album, Song } from "@/lib/navidrome"
-import { formatDuration, formatDurationVerbose } from "@/lib/song-utils"
-import { Shuffle, MoreHorizontal } from "lucide-react"
+import { Album, Song } from "@/lib/navidrome";
+import { formatDuration, formatDurationVerbose } from "@/lib/song-utils";
+import { Shuffle, MoreHorizontal } from "lucide-react";
 
 export default function AlbumDetailPage() {
     const { id } = useParams<{ id: string }>()
