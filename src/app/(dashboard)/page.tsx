@@ -42,21 +42,6 @@ const allPlaylists = [
     ...mockPlaylists,
 ];
 
-const mockArtist = [
-    {
-        "id": "1",
-        "name": "Chris James",
-        "listenCount": 234,
-    }
-]
-
-const mockAlbum = [
-    {
-        "id": "1",
-        "title": "Album 1",
-        "artist": "The Weekend",
-    }
-]
 
 export default function Home() {
     const { api, isConnected } = useNavidrome()
