@@ -32,6 +32,7 @@ interface NavidromeContextType {
     getArtist: (artistId: string) => Promise<{ artist: Artist; albums: Album[] }>;
     getArtistInfo: (artistId: string) => Promise<ArtistInfo>;
     getAlbumInfo: (albumId: string) => Promise<AlbumInfo>;
+    getArtistTopSongs: (artistName: string, limit?: number) => Promise<Song[]>;
     getPlaylist: (playlistId: string) => Promise<{ playlist: Playlist; songs: Song[] }>;
     getAllSongs: () => Promise<Song[]>;
     refreshData: () => Promise<void>;
@@ -265,6 +266,22 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
         }
     };
 
+    const getArtistTopSongs = async (artistName: string, limit: number = 10) => {
+        if (!api) {
+            setError('Navidrome is not configured. Please go to Settings to configure your Navidrome server.');
+            throw new Error('Navidrome is not configured');
+        }
+
+        setError(null);
+        try {
+            return await api.getArtistTopSongs(artistName, limit);
+        } catch (err) {
+            console.error('Failed to get artist top songs:', err);
+            setError('Failed to get artist top songs');
+            throw err;
+        }
+    };
+
     const createPlaylist = async (name: string, songIds?: string[]) => {
         if (!api) {
             setError('Navidrome is not configured. Please go to Settings to configure your Navidrome server.');
@@ -416,6 +433,7 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
         getArtist,
         getArtistInfo,
         getAlbumInfo,
+    getArtistTopSongs,
         getPlaylist,
         getAllSongs,
         refreshData,
