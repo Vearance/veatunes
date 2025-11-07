@@ -76,16 +76,9 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
         setAlbumsLoading(true);
         setError(null);
         try {
-            const recentAlbums = await api.getAlbums('recent', 50);
-            const newestAlbums = await api.getAlbums('newest', 50);
-
-            // Combine and deduplicate albums
-            const allAlbums = [...recentAlbums, ...newestAlbums];
-            const uniqueAlbums = allAlbums.filter((album, index, self) =>
-                index === self.findIndex(a => a.id === album.id)
-            );
-
-            setAlbums(uniqueAlbums);
+            // Fetch a single set of albums to avoid redundant API calls
+            const albumList = await api.getAlbums('newest', 100);
+            setAlbums(albumList);
         } catch (err) {
             console.error('Failed to load albums:', err);
             setError('Failed to load albums');
@@ -391,7 +384,7 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
                 const connected = await api.ping();
                 setIsConnected(connected);
                 if (connected) {
-                    await refreshData();
+                    await Promise.all([loadAlbums(), loadArtists(), loadPlaylists()]);
                 } else {
                     setError('Failed to connect to Navidrome server');
                 }
@@ -403,7 +396,8 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
         };
 
         initialize();
-    }, [api, refreshData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [api]);
 
     const value: NavidromeContextType = {
         // API instance
