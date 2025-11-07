@@ -25,19 +25,22 @@ export default function AlbumDetailPage() {
     const [favorited, setFavorited] = useState(false)
 
     // Memoize computed values - must be before early returns
-    const coverUrl = useMemo(() => 
-        album?.coverArt
-            ? api?.getCoverArtUrl(album.coverArt, 300)
-            : "/albumplaceholder.svg",
-        [album?.coverArt, api]
-    );
+    const coverUrl = useMemo(() => {
+        if (album?.coverArt && api) {
+            return api.getCoverArtUrl(album.coverArt, 300);
+        }
+        return "/albumplaceholder.svg";
+    }, [album?.coverArt, api]);
 
     const totalDuration = useMemo(() => 
         songs.reduce((sum, s) => sum + (s.duration ?? 0), 0),
         [songs]
     );
 
-    const releaseYear = album?.year || "Unknown Year";
+    const releaseYear = useMemo(() => 
+        album?.year || "Unknown Year",
+        [album?.year]
+    );
 
     useEffect(() => {
         if (!isConnected || !id) return
@@ -104,7 +107,7 @@ export default function AlbumDetailPage() {
             <div className="flex items-start gap-6">
                 <div className="relative w-[170px] h-[170px] rounded-lg overflow-hidden bg-zinc-800">
                     <Image
-                        src={coverUrl || "/albumplaceholder.svg"}
+                        src={coverUrl}
                         alt={`Cover art for ${album.name || "Unknown Album"}`}
                         fill
                         className="object-cover"
