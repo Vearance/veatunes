@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useNavidrome } from "@/components/navidrome-context";
@@ -23,6 +23,19 @@ export default function AlbumDetailPage() {
     const [songs, setSongs] = useState<Song[]>([])
     const [loading, setLoading] = useState(true)
     const [favorited, setFavorited] = useState(false)
+
+    // Memoize computed values, must be before early returns
+    const coverUrl = useMemo(() => {
+        if (album?.coverArt && api) {
+            return api.getCoverArtUrl(album.coverArt, 300);
+        }
+        return "/albumplaceholder.svg";
+    }, [album?.coverArt, api]);
+
+    const totalDuration = useMemo(() => 
+        songs.reduce((sum, s) => sum + (s.duration ?? 0), 0),
+        [songs]
+    );
 
     useEffect(() => {
         if (!isConnected || !id) return
@@ -84,11 +97,6 @@ export default function AlbumDetailPage() {
     if (loading) return <p className="text-zinc-400 p-4">Loading album...</p>
     if (!album) return <p className="text-zinc-400 p-4">Album not found.</p>
 
-    const coverUrl = album.coverArt
-        ? api?.getCoverArtUrl(album.coverArt, 300)
-        : "/albumplaceholder.svg"
-
-    const totalDuration = songs.reduce((sum, s) => sum + (s.duration ?? 0), 0)
     const releaseYear = album.year || "Unknown Year"
 
     return (
@@ -96,7 +104,7 @@ export default function AlbumDetailPage() {
             <div className="flex items-start gap-6">
                 <div className="relative w-[170px] h-[170px] rounded-lg overflow-hidden bg-zinc-800">
                     <Image
-                        src={coverUrl || "/albumplaceholder.svg"}
+                        src={coverUrl}
                         alt={`Cover art for ${album.name || "Unknown Album"}`}
                         fill
                         className="object-cover"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useNavidrome } from "@/components/navidrome-context";
@@ -38,6 +38,14 @@ export default function ArtistDetailPage() {
     const [songs, setSongs] = useState<Song[]>([]);
     const [topSongs, setTopSongs] = useState<Song[]>([]);
     const [favorited, setFavorited] = useState(false);
+
+    // Memoize computed values, must be before early returns
+    const coverUrl = useMemo(() => 
+        artist?.coverArt && api
+            ? api.getCoverArtUrl(artist.coverArt, 300)
+            : "/artistplaceholder.svg",
+        [artist?.coverArt, api]
+    );
 
     useEffect(() => {
         if (!isConnected || !id) return;
@@ -140,11 +148,6 @@ export default function ArtistDetailPage() {
 
     if (loading) return <p className="text-zinc-400 p-4">Loading artist...</p>;
     if (!artist) return <p className="text-zinc-400 p-4">Artist not found.</p>;
-
-    const coverUrl =
-        artist.coverArt && api
-            ? api.getCoverArtUrl(artist.coverArt, 300)
-            : "/artistplaceholder.svg";
 
     return (
         <div className="p-4 space-y-6">
