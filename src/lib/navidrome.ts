@@ -306,6 +306,26 @@ export default class NavidromeAPI {
         await this.makeRequest('deletePlaylist', { id: playlistId });
     }
 
+    getStreamUrl(songId: string, maxBitRate?: number): string {
+        const salt = this.generateSalt();
+        const token = this.generateToken(this.config.password, salt);
+        
+        const params = new URLSearchParams({
+            u: this.config.username,
+            t: token,
+            s: salt,
+            v: this.version,
+            c: this.clientName,
+            id: songId
+        });
+
+        if (maxBitRate) {
+        params.append('maxBitRate', maxBitRate.toString());
+        }
+
+        return `${this.config.serverUrl}/rest/stream?${params.toString()}`;
+    }
+
     getCoverArtUrl(coverArtId: string, size?: number): string {
         const salt = this.generateSalt();
         const token = this.generateToken(this.config.password, salt);
