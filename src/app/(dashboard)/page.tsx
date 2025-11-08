@@ -1,12 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
+// import { useEffect, useState } from "react"
 import HorizontalSection from "@/components/horizontal-section"
 import SongCard from "@/components/song-card"
 import PlaylistCard from "@/components/playlist-card"
 import ArtistCard from "@/components/artist-card"
 import AlbumCard from "@/components/album-card"
-import { Album, Artist, Playlist } from "@/lib/navidrome"
+// import { Album, Artist, Playlist } from "@/lib/navidrome"
 import { useNavidrome } from "@/components/navidrome-context"
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -44,35 +44,8 @@ const allPlaylists = [
 
 
 export default function Home() {
-    const { api, isConnected } = useNavidrome()
-    const [albums, setAlbums] = useState<Album[]>([])
-    const [artists, setArtists] = useState<Artist[]>([])
-    const [playlists, setPlaylists] = useState<Playlist[]>([])
-    const [loading, setLoading] = useState(true)
-
-    useEffect(() => {
-        if (!api || !isConnected) return
-
-        const fetchAll = async () => {
-            try {
-                const [albumRes, artistRes, playlistRes] = await Promise.all([
-                    api.getAlbums("newest", 20),
-                    api.getArtists(),
-                    api.getPlaylists(),
-                ])
-
-                setAlbums(albumRes)
-                setArtists(artistRes)
-                setPlaylists(playlistRes)
-            } catch (error) {
-                console.error("Failed to fetch Navidrome data:", error)
-            } finally {
-                setLoading(false)
-            }
-        }
-
-        fetchAll()
-    }, [api, isConnected])
+    // const { api, isConnected } = useNavidrome()
+    const { albums, artists, playlists, isLoading } = useNavidrome()
 
     const renderAlbumSkeletons = (count: number) =>
         Array.from({ length: count }).map((_, i) => (
@@ -118,7 +91,7 @@ export default function Home() {
                 ))}
             </HorizontalSection>
             <HorizontalSection title="Playlists">
-                {loading ? (
+                {isLoading ? (
                     renderPlaylistSkeletons(8)
                 ) : playlists.length === 0 ? (
                     <p className="text-zinc-400">No playlists found.</p>
@@ -127,7 +100,7 @@ export default function Home() {
                 )}
             </HorizontalSection>
             <HorizontalSection title="Artists">
-                {loading ? (
+                {isLoading ? (
                     renderArtistSkeletons(8)
                 ) : artists.length === 0 ? (
                     <p className="text-zinc-400">No artists found.</p>
@@ -136,7 +109,7 @@ export default function Home() {
                 )}
             </HorizontalSection>
             <HorizontalSection title="Albums">
-                {loading ? (
+                {isLoading ? (
                     renderAlbumSkeletons(8)
                 ) : albums.length === 0 ? (
                     <p className="text-zinc-400">No albums found.</p>
