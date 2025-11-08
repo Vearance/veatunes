@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useNavidrome } from "@/components/navidrome-context";
+import { usePlayer } from "@/components/player-context";
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
@@ -23,6 +24,8 @@ export default function AlbumDetailPage() {
     const [songs, setSongs] = useState<Song[]>([])
     const [loading, setLoading] = useState(true)
     const [favorited, setFavorited] = useState(false)
+
+    const { playTrack } = usePlayer()
 
     // Memoize computed values, must be before early returns
     const coverUrl = useMemo(() => {
@@ -223,6 +226,18 @@ export default function AlbumDetailPage() {
                         <div
                             key={song.id}
                             className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-800 transition-colors group"
+                            onClick={() => {
+                                if (!api) return;
+                                playTrack({
+                                id: song.id,
+                                name: song.title,
+                                artist: song.artist,
+                                album: album.name,
+                                coverArt: api.getCoverArtUrl(album.coverArt, 300),
+                                url: api.getStreamUrl(song.id),
+                                duration: song.duration ?? 0,
+                                });
+                            }}
                         >
                             <div className="flex items-center gap-3 min-w-0">
                                 <span className="text-zinc-500 text-sm w-6 text-right">
