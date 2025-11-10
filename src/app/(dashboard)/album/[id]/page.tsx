@@ -25,7 +25,7 @@ export default function AlbumDetailPage() {
     const [loading, setLoading] = useState(true)
     const [favorited, setFavorited] = useState(false)
 
-    const { playTrack } = usePlayer()
+    const { playTrack, playAlbum } = usePlayer()
 
     // Memoize computed values, must be before early returns
     const coverUrl = useMemo(() => {
@@ -130,6 +130,7 @@ export default function AlbumDetailPage() {
                         <Button
                             asChild
                             variant="ghost"
+                            onClick={() => playAlbum(album.id)}
                             className="h-8 w-8 text-border hover:text-secondary hover:bg-transparent cursor-pointer select-none p-0">
                             <Image
                                 src="/icons/playtosc.svg"
@@ -232,9 +233,7 @@ export default function AlbumDetailPage() {
                                     artistId: song.artistId,
                                     album: album.name,
                                     albumId: album.id,
-                                    coverArt: album.coverArt
-                                        ? api.getCoverArtUrl(album.coverArt, 300)
-                                        : undefined,
+                                    coverArt: coverUrl,
                                     url: api.getStreamUrl(song.id),
                                     duration: song.duration ?? 0,
                                 });
