@@ -10,118 +10,91 @@ import { formatDuration } from "@/lib/song-utils";
 
 export function PlayerBar() {
     const {
+        audioRef,
         currentTrack,
+        queue,
+        shuffle,
+        repeat,
         isPlaying,
-        setIsPlaying,
+        isLoading,
+        playedTracks,
+
+        playTrack,
         playNext,
         playPrev,
-    } = usePlayer()
 
-    const audioRef = useRef<HTMLAudioElement | null>(null);
+        addToQueue,
+        clearQueue,
+        removeTrackFromQueue,
+        skipToTrackInQueue,
+        addAlbumToQueue,
+
+        playAlbum,
+
+        toggleShuffle,
+        toggleRepeat,
+        setIsPlaying,
+        seekTo,
+        setVolume,
+        toggleMute,
+    } = usePlayer();
+
+    // const audioRef = useRef<HTMLAudioElement | null>(null);
     const [progressPercent, setProgressPercent] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [muted, setMuted] = useState(false);
     const [seeking, setSeeking] = useState(false);
 
-    // When currentTrack changes, load it into the audio element and autoplay if requested
-    useEffect(() => {
-        if (!currentTrack) {
-        // unload audio
-        if (audioRef.current) {
-            audioRef.current.pause();
-            audioRef.current.src = "";
-        }
-        setProgressPercent(0);
-        setCurrentTime(0);
-        setDuration(0);
-        return;
-        }
-
-        // ensure audio element exists
-        if (!audioRef.current) {
-            const audio = new Audio();
-            audio.preload = "metadata";
-            audio.crossOrigin = "anonymous";
-            audioRef.current = audio;
-        }
-
-
-        const audio = audioRef.current;
-        audio.src = currentTrack.url;
-        audio.crossOrigin = "anonymous";
-
-        const onLoadedMeta = () => {
-        setDuration(audio.duration || 0);
-        };
-        const onTimeUpdate = () => {
-        if (!seeking) {
-            setCurrentTime(audio.currentTime || 0);
-            const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
-            setProgressPercent(Number.isFinite(pct) ? pct : 0);
-        }
-        };
-        const onEnded = () => {
-        setIsPlaying(false);
-        playNext();
-        };
-
-        audio.addEventListener("loadedmetadata", onLoadedMeta);
-        audio.addEventListener("timeupdate", onTimeUpdate);
-        audio.addEventListener("ended", onEnded);
-
-        // Autoplay if the context says playing
-        const tryPlay = async () => {
-        if (isPlaying) {
-            try {
-            await audio.play();
-            } catch (e) {
-            // autoplay might be blocked by browser; in that case keep state consistent
-            setIsPlaying(false);
-            }
-        }
-        };
-
-        tryPlay();
-
-        return () => {
-        audio.removeEventListener("loadedmetadata", onLoadedMeta);
-        audio.removeEventListener("timeupdate", onTimeUpdate);
-        audio.removeEventListener("ended", onEnded);
-        };
-    }, [currentTrack?.id, isPlaying]);
-
-    // Play / Pause side-effect: control audio element
     useEffect(() => {
         const audio = audioRef.current;
         if (!audio) return;
 
-        if (isPlaying) {
-        audio.play().catch(() => {
-            // ignore play error (autoplay policy)
-            setIsPlaying(false);
-        });
-        } else {
-        audio.pause();
-        }
-    }, [isPlaying, setIsPlaying]);
+        const update = () => {
+            if (!seeking) {
+                setCurrentTime(audio.currentTime);
+                setDuration(audio.duration || 0);
+                setProgressPercent(
+                    audio.duration
+                        ? (audio.currentTime / audio.duration) * 100
+                        : 0
+                );
+            }
+        };
 
-    // Mute toggle
-    useEffect(() => {
-        if (audioRef.current) audioRef.current.muted = muted;
-    }, [muted]);
+        audio.addEventListener("timeupdate", update);
+        audio.addEventListener("loadedmetadata", update);
+
+        return () => {
+            audio.removeEventListener("timeupdate", update);
+            audio.removeEventListener("loadedmetadata", update);
+        };
+    }, [audioRef, seeking]);
 
     const togglePlayPause = () => {
-        setIsPlaying(!isPlaying);
+        if (!audioRef.current) return;
+
+        if (isPlaying) {
+            audioRef.current.pause();
+            setIsPlaying(false);
+        } else {
+            audioRef.current.play().catch(() => {});
+            setIsPlaying(true);
+        }
     };
 
     const handleSeek = (value: number) => {
-        if (!audioRef.current) return;
-        const newTime = (value / 100) * (audioRef.current.duration || duration || 0);
-        audioRef.current.currentTime = newTime;
-        setCurrentTime(newTime);
-        setProgressPercent(value);
+        const audio = audioRef.current;
+        if (!audio || !audio.duration) return;
+        const newTime = (value / 100) * audio.duration;
+        seekTo(newTime);
     };
+
+    const toggleMuteHandler = () => {
+        toggleMute();
+        setMuted(audioRef.current?.muted ?? false);
+    };
+
 
     const handleSeekEnd = () => setSeeking(false);
 
@@ -261,7 +234,7 @@ export function PlayerBar() {
                     <Button
                         asChild
                         variant="ghost"
-                        onClick={() => setMuted((m) => !m)}
+                        onClick={toggleMuteHandler}
                         className="h-5 w-5 p-0 hover:bg-transparent cursor-pointer select-none"
                     >
                         <Image
@@ -276,6 +249,7 @@ export function PlayerBar() {
                         defaultValue={[60]}
                         max={100}
                         step={1}
+                        onValueChange={([v]) => setVolume(v / 100)}
                         className="w-[80px] **:data-[slot=slider-track]:h-1 **:data-[slot=slider-thumb]:w-2 **:data-[slot=slider-thumb]:h-2"
                     />
                 </div>
