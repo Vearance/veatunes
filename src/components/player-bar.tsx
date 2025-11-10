@@ -98,8 +98,8 @@ export function PlayerBar() {
 
     const handleSeekEnd = () => setSeeking(false);
 
-    const humanCurrent = formatDuration(Math.floor(currentTime || 0));
-    const humanDuration = formatDuration(Math.floor(duration || 0));
+    const formattedCurrent = formatDuration(Math.floor(currentTime || 0));
+    const formattedDuration = formatDuration(Math.floor(duration || 0));
 
     return (
         <div className="fixed bottom-0 left-0 right-0 z-50 m-[26px] max-h-[90px] bg-playerbar backdrop-blur-xs rounded-2xl p-2.5 grid grid-cols-[375px_1fr_375px] items-center">
@@ -210,7 +210,7 @@ export function PlayerBar() {
                 </div>
 
                 <div className="flex items-center justify-center gap-3 w-full mt-2.5 font-satoshi">
-                    <span className="text-xs text-accent">{humanCurrent}</span>
+                    <span className="text-xs text-accent">{formattedCurrent}</span>
                     <Slider
                         value={[progressPercent]}
                         onValueChange={([v]) => {
@@ -225,7 +225,7 @@ export function PlayerBar() {
                         step={0.1}
                         className="flex-1 max-w-[480px] **:data-[slot=slider-track]:h-1 **:data-[slot=slider-thumb]:w-2.5 **:data-[slot=slider-thumb]:h-2.5"
                     />
-                    <span className="text-xs text-accent">{humanDuration}</span>
+                    <span className="text-xs text-accent">{formattedDuration}</span>
                 </div>
             </div>
 
