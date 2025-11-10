@@ -369,16 +369,6 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         [api, shuffle, playTrack, songToTrack]
     );
 
-    // const handleSetIsPlaying = useCallback((value: boolean) => {
-    //     setIsPlaying(value);
-
-    //     if (value) {
-    //         audioRef.current?.play().catch(() => {});
-    //     } else {
-    //         audioRef.current?.pause();
-    //     }
-    // }, []);
-
     // when currentTrack changes, load its URL into audio
     useEffect(() => {
         const audio = audioRef.current;
