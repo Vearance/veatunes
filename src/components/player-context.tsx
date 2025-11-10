@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useNavidrome } from "@/components/navidrome-context";
 import { Song } from "@/lib/navidrome";
 
@@ -19,11 +19,13 @@ export interface Track {
 }
 
 interface PlayerContextProps {
+    audioRef: React.RefObject<HTMLAudioElement | null>;
+
     // state
     currentTrack: Track | null;
     queue: Track[];
     shuffle: boolean;
-    repeat: boolean;
+    repeat: "off" | "one" | "all";
     isPlaying: boolean;
     isLoading: boolean;
     playedTracks: Track[];
@@ -36,7 +38,7 @@ interface PlayerContextProps {
     // queue management
     addToQueue: (track: Track) => void;
     clearQueue: () => void;
-    removeTrackFromQueue: (index: number) => void;
+    removeTrackFromQueue: (trackId: string) => void;
     skipToTrackInQueue: (index: number) => void;
     addAlbumToQueue: (albumId: string) => Promise<void>;
 
@@ -47,6 +49,9 @@ interface PlayerContextProps {
     toggleShuffle: () => void;
     toggleRepeat: () => void;
     setIsPlaying: (playing: boolean) => void;
+    seekTo: (time: number) => void;
+    setVolume: (volume: number) => void;
+    toggleMute: () => void
 }
 
 const PlayerContext = createContext<PlayerContextProps | undefined>(undefined);
@@ -64,7 +69,6 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     const [isPlaying, setIsPlaying] = useState(false);
     const [shuffle, setShuffle] = useState(false);
     const [repeat, setRepeat] = useState<"off" | "one" | "all">("off");
-
 
     const songToTrack = useCallback(
         (song: Song): Track => {
@@ -126,7 +130,6 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     }, []);
 
-
     // save state to localStorage
     useEffect(() => {
         try {
@@ -140,6 +143,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         try {
             if (currentTrack) {
                 // remove runtime-only properties
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 const { autoPlay, ...trackToSave } = currentTrack;
                 localStorage.setItem(
                     "player-currentTrack",
@@ -153,7 +157,6 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     }, [currentTrack]);
 
-
     // playback controls
     const playTrack = useCallback(
         (track: Track, autoPlay = true, startFromQueue = false) => {
@@ -165,11 +168,11 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
             }
 
             // clear saved playback position
-            localStorage.removeItem("player-currentTrack-time");           
+            localStorage.removeItem("player-currentTrack-time");
 
             // track w/ autoPlay flag
             const trackWithAuto = { ...track, autoPlay };
-            setCurrentTrack(trackWithAuto); 
+            setCurrentTrack(trackWithAuto);
 
             if (!startFromQueue) {
                 setQueue([trackWithAuto]);
@@ -187,38 +190,6 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         },
         [api, currentTrack]
     );
-    // const playTrack = useCallback(
-    //     (track: Track, autoPlay = true, startFromQueue = false) => {
-    //         if (!track) return;
-
-    //         // clear saved playback position
-    //         localStorage.removeItem("player-currentTrack-time");
-
-    //         // track w/ autoPlay flag
-    //         const trackWithAuto = { ...track, autoPlay };
-    //         setCurrentTrack(trackWithAuto); 
-
-    //         if (startFromQueue) {
-    //             // playing something already in the queue (e.g. next/previous)
-    //             setPlayedTracks((prev) => [...prev, trackWithAuto]);
-    //         } else {
-    //             // playing a single track or new selection -> replace queue
-    //             setQueue([trackWithAuto]);
-    //             setPlayedTracks([]);
-    //         }
-
-    //         if (api) {
-    //             api.scrobble(track.id).catch((err) =>
-    //                 console.warn("Failed to scrobble track:", err)
-    //             );
-    //         }
-
-    //         // set playback state
-    //         setIsPlaying(autoPlay);
-    //     },
-    //     [api]
-    // );
-
 
     const playNext = useCallback(() => {
         if (!currentTrack || queue.length === 0) return;
@@ -235,7 +206,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         if (!isLast) {
             // not end of queue; move to next track
             playTrack(queue[currentIndex + 1], true, true);
-        } else { 
+        } else {
             // end of queue
             if (repeat === "all") {
                 // repeat all -> go to first track
@@ -246,26 +217,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
             }
         }
     }, [currentTrack, queue, repeat, playTrack, setIsPlaying]);
-    // const playNext = useCallback(() => {
-    //     if (!currentTrack || queue.length === 0) return;
 
-    //     const currentIndex = queue.findIndex((t) => t.id === currentTrack.id);
-    //     const nextIndex = currentIndex + 1;
-
-    //     if (nextIndex < queue.length) {
-    //         const nextTrack = queue[nextIndex];
-    //         playTrack(
-    //             nextTrack,
-    //             true /* autoPlay */,
-    //             true /* startFromQueue */
-    //         );
-    //     } else {
-    //         // end of queue - stop or loop depending on settings
-    //         setIsPlaying(false);
-    //     }
-    // }, [currentTrack, queue, playTrack]);
-
-    
     const playPrev = useCallback(() => {
         if (!currentTrack) return;
 
@@ -286,23 +238,6 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
             playTrack(currentTrack, true, true);
         }
     }, [currentTrack, playedTracks, playTrack]);
-    // const playPrev = useCallback(() => {
-    //     // if there are played tracks, go back to the most recent one
-    //     if (playedTracks.length > 0) {
-    //         const lastPlayed = playedTracks[playedTracks.length - 1];
-
-    //         // remove from the played list (so it doesn’t duplicate)
-    //         setPlayedTracks((prev) => prev.slice(0, -1));
-
-    //         playTrack(lastPlayed, true, true); // startFromQueue, autoPlay = true
-    //     } else {
-    //         // no previous track —> restart current one
-    //         if (currentTrack) {
-    //             playTrack(currentTrack, true, true);
-    //         }
-    //     }
-    // }, [playedTracks, currentTrack, playTrack]);
-
 
     const toggleRepeat = useCallback(() => {
         setRepeat((prev) => {
@@ -312,7 +247,6 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         });
     }, []);
 
-
     const toggleShuffle = useCallback(() => {
         setShuffle((prev) => {
             const newShuffle = !prev;
@@ -320,7 +254,9 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
             setQueue((prevQueue) => {
                 if (!currentTrack || prevQueue.length <= 1) return prevQueue;
 
-                const remaining = prevQueue.filter((t) => t.id !== currentTrack.id);
+                const remaining = prevQueue.filter(
+                    (t) => t.id !== currentTrack.id
+                );
                 const shuffled = newShuffle
                     ? remaining.sort(() => Math.random() - 0.5)
                     : remaining; // could re-sort to original if you store that
@@ -331,7 +267,6 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
             return newShuffle;
         });
     }, [currentTrack]);
-
 
     const addToQueue = useCallback(
         (track: Track) => {
@@ -359,21 +294,16 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         [shuffle]
     );
 
-    
     const clearQueue = useCallback(() => {
         setQueue([]);
         setPlayedTracks([]);
         setCurrentTrack(null);
         setIsPlaying(false);
     }, []);
-    // const clearQueue = useCallback(() => {
-    //     setQueue([]);
-    // }, []);
 
     const removeTrackFromQueue = useCallback((trackId: string) => {
         setQueue((prev) => prev.filter((t) => t.id !== trackId));
     }, []);
-
 
     const skipToTrackInQueue = useCallback(
         (index: number) => {
@@ -384,62 +314,127 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         [queue, playTrack]
     );
 
-
     const addAlbumToQueue = useCallback(
-        (tracks: Track[]) => {
-            if (!tracks || tracks.length === 0) return;
+        async (albumId: string) => {
+            if (!api) return;
 
-            setQueue((prev) => {
-                const newTracks = tracks.filter(
-                    (t) => !prev.some((q) => q.id === t.id)
-                );
+            try {
+                const { songs } = await api.getAlbum(albumId);
+                const tracks = songs.map(songToTrack);
 
-                if (shuffle) {
-                    const randomIndex = Math.floor(
-                        Math.random() * (prev.length + 1)
+                setQueue((prev) => {
+                    const newTracks = tracks.filter(
+                        (t) => !prev.some((q) => q.id === t.id)
                     );
-                    const newQueue = [...prev];
-                    newQueue.splice(randomIndex, 0, ...newTracks);
-                    return newQueue;
-                } else {
-                    return [...prev, ...newTracks];
-                }
-            });
-        },
-        [shuffle]
-    );
 
+                    if (shuffle) {
+                        const randomIndex = Math.floor(
+                            Math.random() * (prev.length + 1)
+                        );
+                        const newQueue = [...prev];
+                        newQueue.splice(randomIndex, 0, ...newTracks);
+                        return newQueue;
+                    } else {
+                        return [...prev, ...newTracks];
+                    }
+                });
+            } catch (error) {
+                console.error("Failed to add album to queue:", error);
+            }
+        },
+        [api, shuffle, songToTrack]
+    );
 
     const playAlbum = useCallback(
-        (tracks: Track[]) => {
-            if (!tracks || tracks.length === 0) return;
+        async (albumId: string) => {
+            if (!api) return;
 
-            const shuffled = shuffle
-                ? [...tracks].sort(() => Math.random() - 0.5)
-                : tracks;
-            const firstTrack = shuffled[0];
+            try {
+                const { songs } = await api.getAlbum(albumId);
+                const tracks = songs.map(songToTrack);
 
-            setQueue(shuffled);
-            setPlayedTracks([]);
-            playTrack(firstTrack, true, false);
+                const shuffled = shuffle
+                    ? [...tracks].sort(() => Math.random() - 0.5)
+                    : tracks;
+
+                const firstTrack = shuffled[0];
+
+                setQueue(shuffled);
+                setPlayedTracks([]);
+                playTrack(firstTrack, true, false);
+            } catch (error) {
+                console.error("Failed to play album:", error);
+            }
         },
-        [shuffle, playTrack]
+        [api, shuffle, playTrack, songToTrack]
     );
-    
 
-    const handleSetIsPlaying = useCallback((value: boolean) => {
-        setIsPlaying(value);
+    // const handleSetIsPlaying = useCallback((value: boolean) => {
+    //     setIsPlaying(value);
 
-        if (value) {
-            audioRef.current?.play().catch(() => {});
+    //     if (value) {
+    //         audioRef.current?.play().catch(() => {});
+    //     } else {
+    //         audioRef.current?.pause();
+    //     }
+    // }, []);
+
+    // when currentTrack changes, load its URL into audio
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        if (currentTrack) {
+            audio.src = currentTrack.url;
+            audio.load();
+
+            if (currentTrack.autoPlay) {
+                audio
+                    .play()
+                    .catch((err) => console.warn("Autoplay failed:", err));
+            }
         } else {
-            audioRef.current?.pause();
+            audio.removeAttribute("src");
+        }
+    }, [currentTrack]);
+
+    // keep play/pause state synced with <audio>
+    useEffect(() => {
+        const audio = audioRef.current;
+        if (!audio) return;
+
+        if (isPlaying) {
+            audio.play().catch((err) => console.warn("Play failed:", err));
+        } else {
+            audio.pause();
+        }
+    }, [isPlaying]);
+
+    // helper: seek to specific time
+    const seekTo = useCallback((time: number) => {
+        if (audioRef.current) {
+            audioRef.current.currentTime = time;
         }
     }, []);
 
+    // helper: set volume (0–1)
+    const setVolume = useCallback((value: number) => {
+        if (audioRef.current) {
+            audioRef.current.volume = Math.min(Math.max(value, 0), 1);
+        }
+    }, []);
+
+    // helper: toggle mute
+    const toggleMute = useCallback(() => {
+        if (audioRef.current) {
+            audioRef.current.muted = !audioRef.current.muted;
+        }
+    }, []);
 
     const value = useMemo(
         () => ({
+            audioRef,
+            
             currentTrack,
             queue,
             shuffle,
@@ -463,8 +458,12 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
             toggleShuffle,
             toggleRepeat,
             setIsPlaying,
+            seekTo,
+            setVolume,
+            toggleMute,
         }),
-        [
+        [  
+            audioRef,
             currentTrack,
             queue,
             shuffle,
@@ -484,13 +483,22 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
             toggleShuffle,
             toggleRepeat,
             setIsPlaying,
+            seekTo,
+            setVolume,
+            toggleMute,
         ]
     );
-
 
     return (
         <PlayerContext.Provider value={value}>
             {children}
+            <audio
+                ref={audioRef}
+                onEnded={playNext}
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                onError={(e) => console.error("Audio error:", e)}
+            />
         </PlayerContext.Provider>
     );
 };

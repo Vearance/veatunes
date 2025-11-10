@@ -433,7 +433,7 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
         getArtist,
         getArtistInfo,
         getAlbumInfo,
-    getArtistTopSongs,
+        getArtistTopSongs,
         getPlaylist,
         getAllSongs,
         refreshData,
