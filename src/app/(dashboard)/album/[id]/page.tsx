@@ -130,8 +130,7 @@ export default function AlbumDetailPage() {
                         <Button
                             asChild
                             variant="ghost"
-                            className="h-8 w-8 text-border hover:text-secondary hover:bg-transparent cursor-pointer select-none p-0"
-                        >
+                            className="h-8 w-8 text-border hover:text-secondary hover:bg-transparent cursor-pointer select-none p-0">
                             <Image
                                 src="/icons/playtosc.svg"
                                 alt="Play"
@@ -144,8 +143,7 @@ export default function AlbumDetailPage() {
                         <Button
                             asChild
                             variant="ghost"
-                            className="text-border hover:text-secondary hover:bg-transparent cursor-pointer p-0"
-                        >
+                            className="text-border hover:text-secondary hover:bg-transparent cursor-pointer p-0">
                             <Shuffle size={24} />
                         </Button>
 
@@ -153,8 +151,7 @@ export default function AlbumDetailPage() {
                             asChild
                             variant="ghost"
                             onClick={handleAlbumFavorite}
-                            className="hover:opacity-100 transition hover:bg-transparent cursor-pointer select-none p-0"
-                        >
+                            className="hover:opacity-100 transition hover:bg-transparent cursor-pointer select-none p-0">
                             {favorited ? (
                                 <Image
                                     src="/icons/heartfilled.svg"
@@ -178,8 +175,7 @@ export default function AlbumDetailPage() {
                         <Button
                             asChild
                             variant="ghost"
-                            className="hover:bg-transparent hover:opacity-100 transition cursor-pointer p-0"
-                        >
+                            className="hover:bg-transparent hover:opacity-100 transition cursor-pointer p-0">
                             <Image
                                 src="/icons/addtoqueue.svg"
                                 alt="Add Queue"
@@ -195,14 +191,17 @@ export default function AlbumDetailPage() {
                                 <Button
                                     asChild
                                     variant="ghost"
-                                    className="text-border hover:text-secondary hover:bg-transparent cursor-pointer p-0"
-                                >
+                                    className="text-border hover:text-secondary hover:bg-transparent cursor-pointer p-0">
                                     <MoreHorizontal size={24} />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
-                                <DropdownMenuItem>Add to Playlist</DropdownMenuItem>
-                                <DropdownMenuItem>Go to Artist</DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    Add to Playlist
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    Go to Artist
+                                </DropdownMenuItem>
                                 <DropdownMenuItem>Share</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
@@ -217,9 +216,7 @@ export default function AlbumDetailPage() {
                     <span className="text-right mr-12">Duration</span>
                 </div>
 
-
                 <Separator className="my-1.5 h-[2px] bg-border/75" />
-
 
                 <div>
                     {songs.map((song) => (
@@ -229,16 +226,19 @@ export default function AlbumDetailPage() {
                             onClick={() => {
                                 if (!api) return;
                                 playTrack({
-                                id: song.id,
-                                name: song.title,
-                                artist: song.artist,
-                                album: album.name,
-                                coverArt: api.getCoverArtUrl(album.coverArt, 300),
-                                url: api.getStreamUrl(song.id),
-                                duration: song.duration ?? 0,
+                                    id: song.id,
+                                    name: song.title,
+                                    artist: song.artist,
+                                    artistId: song.artistId,
+                                    album: album.name,
+                                    albumId: album.id,
+                                    coverArt: album.coverArt
+                                        ? api.getCoverArtUrl(album.coverArt, 300)
+                                        : undefined,
+                                    url: api.getStreamUrl(song.id),
+                                    duration: song.duration ?? 0,
                                 });
-                            }}
-                        >
+                            }}>
                             <div className="flex items-center gap-3 min-w-0">
                                 <span className="text-zinc-500 text-sm w-6 text-right">
                                     {song.track ?? 0}
@@ -258,10 +258,9 @@ export default function AlbumDetailPage() {
                                     variant="ghost"
                                     className="hover:opacity-100 transition hover:bg-transparent cursor-pointer ml-4 p-0"
                                     onClick={(e) => {
-                                        e.stopPropagation()
-                                        handleSongFavorite(song)
-                                    }}
-                                >
+                                        e.stopPropagation();
+                                        handleSongFavorite(song);
+                                    }}>
                                     {song.starred ? (
                                         <Image
                                             src="/icons/heartfilled.svg"
