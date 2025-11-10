@@ -363,7 +363,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
 
                 setQueue(shuffled);
                 setPlayedTracks([]);
-                playTrack(firstTrack, true, false);
+                playTrack(firstTrack, true, true);
             } catch (error) {
                 console.error("Failed to play album:", error);
             }
