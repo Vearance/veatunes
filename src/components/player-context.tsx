@@ -65,6 +65,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
     const [queue, setQueue] = useState<Track[]>([]);
     const [playedTracks, setPlayedTracks] = useState<Track[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [isLoading, setIsLoading] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [shuffle, setShuffle] = useState(false);
@@ -219,14 +220,14 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     }, [currentTrack, queue, repeat, playTrack, setIsPlaying]);
 
     const playPrev = useCallback(() => {
-        if (!currentTrack) return;
+        if (!currentTrack || !audioRef.current) return;
 
-        const currentTime = audioRef.current?.currentTime ?? 0;
+        const currentTime = audioRef.current.currentTime ?? 0;
 
         if (currentTime > 3) {
             // restart current song
             audioRef.current.currentTime = 0;
-            audioRef.current.play();
+            void audioRef.current.play();
             return;
         }
 
@@ -237,7 +238,8 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         } else {
             playTrack(currentTrack, true, true);
         }
-    }, [currentTrack, playedTracks, playTrack]);
+    }, [audioRef, currentTrack, playedTracks, playTrack]);
+
 
     const toggleRepeat = useCallback(() => {
         setRepeat((prev) => {
