@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePlayer } from '@/components/player-context';
 import Image from "next/image";
-import { useNavidrome } from "@/components/navidrome-context";
+// import { useNavidrome } from "@/components/navidrome-context";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { formatDuration } from "@/lib/song-utils";
@@ -12,27 +12,27 @@ export function PlayerBar() {
     const {
         audioRef,
         currentTrack,
-        queue,
-        shuffle,
-        repeat,
+        // queue,
+        // shuffle,
+        // repeat,
         isPlaying,
-        isLoading,
-        playedTracks,
+        // isLoading,
+        // playedTracks,
 
-        playTrack,
+        // playTrack,
         playNext,
         playPrev,
 
-        addToQueue,
-        clearQueue,
-        removeTrackFromQueue,
-        skipToTrackInQueue,
-        addAlbumToQueue,
+        // addToQueue,
+        // clearQueue,
+        // removeTrackFromQueue,
+        // skipToTrackInQueue,
+        // addAlbumToQueue,
 
-        playAlbum,
+        // playAlbum,
 
-        toggleShuffle,
-        toggleRepeat,
+        // toggleShuffle,
+        // toggleRepeat,
         setIsPlaying,
         seekTo,
         setVolume,
