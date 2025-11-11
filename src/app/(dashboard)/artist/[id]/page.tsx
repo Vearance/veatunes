@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useNavidrome } from "@/components/navidrome-context";
+import { usePlayer } from "@/components/player-context";
 import AlbumCard from "@/components/album-card";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,6 +39,8 @@ export default function ArtistDetailPage() {
     const [songs, setSongs] = useState<Song[]>([]);
     const [topSongs, setTopSongs] = useState<Song[]>([]);
     const [favorited, setFavorited] = useState(false);
+
+    const { songToTrack, playTrack, playAlbum, addToQueue } = usePlayer();
 
     // Memoize computed values, must be before early returns
     const coverUrl = useMemo(() => 
@@ -261,8 +264,11 @@ export default function ArtistDetailPage() {
                             {topSongs.map((song, index) => (
                                 <div
                                     key={song.id}
-                                    className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-800 transition-colors group"
-                                >
+                                    className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-800 transition-colors group cursor-pointer"
+                                    onClick={() => {
+                                        const track = songToTrack(song);
+                                        playTrack(track);
+                                    }}>
                                     <div className="flex items-center gap-3 min-w-0">
                                         <span className="text-zinc-500 text-sm w-6 text-right">
                                             {index + 1}
@@ -289,8 +295,7 @@ export default function ArtistDetailPage() {
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleSongFavorite(song);
-                                            }}
-                                        >
+                                            }}>
                                             {song.starred ? (
                                                 <Image
                                                     src="/icons/heartfilled.svg"
