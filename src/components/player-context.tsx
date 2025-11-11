@@ -29,6 +29,9 @@ interface PlayerContextProps {
     isPlaying: boolean;
     isLoading: boolean;
     playedTracks: Track[];
+
+    // utilities
+    songToTrack: (song: Song) => Track;
     
     // playback controls
     playTrack: (track: Track, autoPlay?: boolean) => void;
@@ -426,6 +429,8 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     const value = useMemo(
         () => ({
             audioRef,
+
+            songToTrack,
             
             currentTrack,
             queue,
@@ -456,6 +461,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         }),
         [  
             audioRef,
+            songToTrack,
             currentTrack,
             queue,
             shuffle,
