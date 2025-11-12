@@ -40,7 +40,7 @@ export default function ArtistDetailPage() {
     const [topSongs, setTopSongs] = useState<Song[]>([]);
     const [favorited, setFavorited] = useState(false);
 
-    const { songToTrack, playTrack, playAlbum, addToQueue } = usePlayer();
+    const { songToTrack, playTrack, playAlbum, playArtist, addToQueue } = usePlayer();
 
     // Memoize computed values, must be before early returns
     const coverUrl = useMemo(() => 
@@ -178,6 +178,9 @@ export default function ArtistDetailPage() {
                         <Button
                             asChild
                             variant="ghost"
+                            onClick={() => {
+                                playArtist(songs);
+                            }}
                             className="h-8 w-8 text-border hover:text-secondary hover:bg-transparent cursor-pointer select-none p-0">
                             <Image
                                 src="/icons/playtosc.svg"

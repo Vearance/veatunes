@@ -47,6 +47,7 @@ interface PlayerContextProps {
 
     // convenience methods
     playAlbum: (albumId: string) => Promise<void>;
+    playArtist: (songs: Song[]) => void; // artist's all songs is being handled on the page
     
     // settings
     toggleShuffle: () => void;
@@ -374,6 +375,15 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         [api, shuffle, playTrack, songToTrack]
     );
 
+    // all artist's songs loaded on the page
+    const playArtist = (songs: Song[]) => {
+        if (!songs.length) return;
+        const tracks = songs.map(songToTrack);
+        playTrack(tracks[0]);
+        tracks.slice(1).forEach(addToQueue);
+    };
+
+
     // when currentTrack changes, load its URL into audio
     useEffect(() => {
         const audio = audioRef.current;
@@ -451,6 +461,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
             addAlbumToQueue,
 
             playAlbum,
+            playArtist,
 
             toggleShuffle,
             toggleRepeat,
@@ -478,6 +489,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
             skipToTrackInQueue,
             addAlbumToQueue,
             playAlbum,
+            playArtist,
             toggleShuffle,
             toggleRepeat,
             setIsPlaying,
