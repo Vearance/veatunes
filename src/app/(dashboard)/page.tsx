@@ -1,12 +1,10 @@
 "use client"
 
-// import { useEffect, useState } from "react"
 import HorizontalSection from "@/components/horizontal-section"
 import SongCard from "@/components/song-card"
 import PlaylistCard from "@/components/playlist-card"
 import ArtistCard from "@/components/artist-card"
 import AlbumCard from "@/components/album-card"
-// import { Album, Artist, Playlist } from "@/lib/navidrome"
 import { useNavidrome } from "@/components/navidrome-context"
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -90,15 +88,6 @@ export default function Home() {
                     <SongCard key={song.id} song={song} />
                 ))}
             </HorizontalSection>
-            <HorizontalSection title="Playlists">
-                {isLoading ? (
-                    renderPlaylistSkeletons(8)
-                ) : playlists.length === 0 ? (
-                    <p className="text-zinc-400">No playlists found.</p>
-                ) : (
-                    playlists.map(pl => <PlaylistCard key={pl.id} playlist={pl} />)
-                )}
-            </HorizontalSection>
             <HorizontalSection title="Artists">
                 {isLoading ? (
                     renderArtistSkeletons(8)
@@ -115,6 +104,15 @@ export default function Home() {
                     <p className="text-zinc-400">No albums found.</p>
                 ) : (
                     albums.map(album => <AlbumCard key={album.id} album={album} />)
+                )}
+            </HorizontalSection>
+            <HorizontalSection title="Playlists">
+                {isLoading ? (
+                    renderPlaylistSkeletons(8)
+                ) : playlists.length === 0 ? (
+                    <p className="text-zinc-400">No playlists found.</p>
+                ) : (
+                    playlists.map(pl => <PlaylistCard key={pl.id} playlist={pl} />)
                 )}
             </HorizontalSection>
         </div>

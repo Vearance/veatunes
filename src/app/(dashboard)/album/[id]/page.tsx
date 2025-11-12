@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useNavidrome } from "@/components/navidrome-context";
 import { usePlayer } from "@/components/player-context";
@@ -119,7 +120,15 @@ export default function AlbumDetailPage() {
                             {album.name}
                         </h1>
                         <p className="text-zinc-400">
-                            {album.artist || "Unknown Artist"}
+                            {album.artistId ? (
+                                <Link
+                                    href={`/artist/${album.artistId}`}
+                                >
+                                    {album.artist || "Unknown Artist"}
+                                </Link>
+                            ) : (
+                                album.artist || "Unknown Artist"
+                            )}
                         </p>
                         <p className="text-sm text-zinc-500 mt-1">
                             {releaseYear} • {album.songCount} songs •{" "}
