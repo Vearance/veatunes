@@ -246,7 +246,7 @@ export function PlayerBar() {
                         />
                     </Button>
                     <Slider
-                        defaultValue={[60]}
+                        defaultValue={[60]}  // TODO: implement saved volume level
                         max={100}
                         step={1}
                         onValueChange={([v]) => setVolume(v / 100)}
