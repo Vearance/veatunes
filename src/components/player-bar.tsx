@@ -45,6 +45,7 @@ export function PlayerBar() {
     const [duration, setDuration] = useState(0);
     const [muted, setMuted] = useState(false);
     const [seeking, setSeeking] = useState(false);
+    const [volume, setVolumeState] = useState(100);
 
     useEffect(() => {
         const audio = audioRef.current;
@@ -62,12 +63,20 @@ export function PlayerBar() {
             }
         };
 
+        const updateVolume = () => {
+            setVolumeState(audio.muted ? 0 : audio.volume * 100);
+        };
+
         audio.addEventListener("timeupdate", update);
         audio.addEventListener("loadedmetadata", update);
+        audio.addEventListener("volumechange", updateVolume);
+
+        updateVolume();
 
         return () => {
             audio.removeEventListener("timeupdate", update);
             audio.removeEventListener("loadedmetadata", update);
+            audio.removeEventListener("volumechange", updateVolume);
         };
     }, [audioRef, seeking]);
 
@@ -246,7 +255,7 @@ export function PlayerBar() {
                         />
                     </Button>
                     <Slider
-                        defaultValue={[60]}  // TODO: implement saved volume level
+                        value={[volume]}
                         max={100}
                         step={1}
                         onValueChange={([v]) => setVolume(v / 100)}
