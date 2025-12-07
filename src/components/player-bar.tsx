@@ -232,7 +232,7 @@ export function PlayerBar() {
                         }}
                         max={100}
                         step={0.1}
-                        className="flex-1 max-w-[480px] **:data-[slot=slider-track]:h-1 **:data-[slot=slider-thumb]:w-2.5 **:data-[slot=slider-thumb]:h-2.5"
+                        className="flex-1 max-w-[480px] cursor-pointer **:data-[slot=slider-track]:h-1.25 **:data-[slot=slider-thumb]:w-2.5 **:data-[slot=slider-thumb]:h-2.5"
                     />
                     <span className="text-xs text-accent">{formattedDuration}</span>
                 </div>
@@ -259,7 +259,7 @@ export function PlayerBar() {
                         max={100}
                         step={1}
                         onValueChange={([v]) => setVolume(v / 100)}
-                        className="w-[80px] **:data-[slot=slider-track]:h-1 **:data-[slot=slider-thumb]:w-2 **:data-[slot=slider-thumb]:h-2"
+                        className="w-[80px] cursor-pointer **:data-[slot=slider-track]:h-1 **:data-[slot=slider-thumb]:w-2 **:data-[slot=slider-thumb]:h-2"
                     />
                 </div>
 
