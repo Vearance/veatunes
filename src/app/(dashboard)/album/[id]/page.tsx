@@ -232,7 +232,7 @@ export default function AlbumDetailPage() {
                     {songs.map((song) => (
                         <div
                             key={song.id}
-                            className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-800 transition-colors group"
+                            className="flex items-center cursor-pointer justify-between p-2 rounded-lg hover:bg-zinc-800 transition-colors group"
                             onClick={() => {
                                 if (!api) return;
                                 playTrack({
