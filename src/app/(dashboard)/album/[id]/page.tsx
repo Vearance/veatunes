@@ -143,8 +143,6 @@ export default function AlbumDetailPage() {
                                 const isPlayingThisAlbum = currentTrack && songs.some(s => s.id === currentTrack.id);
                                 if (isPlayingThisAlbum && isPlaying) {
                                     setIsPlaying(false);
-                                } else if (isPlayingThisAlbum) {
-                                    setIsPlaying(true);
                                 } else {
                                     playAlbum(album.id);
                                 }

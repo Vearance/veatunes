@@ -182,8 +182,6 @@ export default function ArtistDetailPage() {
                                 const isPlayingThisArtist = currentTrack && songs.some(s => s.id === currentTrack.id);
                                 if (isPlayingThisArtist && isPlaying) {
                                     setIsPlaying(false);
-                                } else if (isPlayingThisArtist) {
-                                    setIsPlaying(true);
                                 } else {
                                     playArtist(songs);
                                 }

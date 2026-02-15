@@ -174,8 +174,6 @@ export default function SongsPage() {
     const handlePlayPause = () => {
         if (isPlayingTheseSongs && isPlaying) {
             setIsPlaying(false);
-        } else if (isPlayingTheseSongs) {
-            setIsPlaying(true);
         } else if (filteredSongs.length > 0) {
             playArtist(filteredSongs);
         }

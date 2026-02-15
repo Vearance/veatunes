@@ -106,8 +106,6 @@ export default function PlaylistDetailPage() {
     const handlePlayPause = () => {
         if (isPlayingThisPlaylist && isPlaying) {
             setIsPlaying(false);
-        } else if (isPlayingThisPlaylist) {
-            setIsPlaying(true);
         } else if (songs.length > 0) {
             playArtist(songs);
         }
