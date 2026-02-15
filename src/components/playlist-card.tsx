@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { Playlist } from "@/lib/navidrome"
 import { useNavidrome } from "@/components/navidrome-context"
 
@@ -35,7 +36,7 @@ export default function PlaylistCard({ playlist }: PlaylistCardProps) {
     const previewTitles = titles ? titles.join(", ") : null;
 
     return (
-        <div className="w-[170px] h-[253px] flex flex-col cursor-pointer group">
+        <Link href={`/playlist/${playlist.id}`} className="w-[170px] h-[253px] flex flex-col cursor-pointer group">
             <div className="relative flex flex-col items-center">
 
                 <div className="bg-[#73737326] w-[133px] h-[3px] rounded-t-[7.25px]" />
@@ -69,6 +70,6 @@ export default function PlaylistCard({ playlist }: PlaylistCardProps) {
                 {previewTitles ? `${previewTitles}${playlist.songCount > 3 ? ", and more" : ""}` : "No songs"}
             </p>
 
-        </div>
+        </Link>
     );
 }
