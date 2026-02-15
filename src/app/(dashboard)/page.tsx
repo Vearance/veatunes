@@ -6,44 +6,12 @@ import PlaylistCard from "@/components/playlist-card"
 import ArtistCard from "@/components/artist-card"
 import AlbumCard from "@/components/album-card"
 import { useNavidrome } from "@/components/navidrome-context"
+import { usePlayer } from "@/components/player-context"
 import { Skeleton } from "@/components/ui/skeleton"
 
-const mockSongs = [
-    { id: "1", title: "Song 1", artist: "Chris James" },
-    { id: "2", title: "Song 2", artist: "Chris James" },
-    { id: "3", title: "Song 3", artist: "Chris James" },
-    { id: "4", title: "Song 3", artist: "Chris James" },
-    { id: "5", title: "Song 3", artist: "Chris James" },
-    { id: "6", title: "Song 3", artist: "Chris James" },
-    { id: "7", title: "Song 3", artist: "Chris James" },
-    { id: "8", title: "Song 3", artist: "Chris James" },
-    { id: "9", title: "Song 3", artist: "Chris James" },
-]
-
-const mockPlaylists = [
-    {
-        id: "1",
-        title: "Liked Songs",
-        songCount: 87,
-        songs: ["Song A", "Song B", "Song C"]
-    },
-    {
-        id: "2",
-        title: "Chill Vibes",
-        songCount: 42,
-        songs: ["Apa", "Haha", "Hihi"]
-    }
-];
-
-const allPlaylists = [
-    { id: "liked", title: "Liked Songs", songs: [], songCount: 0, coverUrl: "/likedplaceholder.svg" },
-    ...mockPlaylists,
-];
-
-
 export default function Home() {
-    // const { api, isConnected } = useNavidrome()
     const { albums, artists, playlists, isLoading } = useNavidrome()
+    const { recentlyPlayed } = usePlayer()
 
     const renderAlbumSkeletons = (count: number) =>
         Array.from({ length: count }).map((_, i) => (
@@ -83,11 +51,13 @@ export default function Home() {
 
     return (
         <div className="space-y-8 px-2">
-            <HorizontalSection title="Recently Played">
-                {mockSongs.map(song => (
-                    <SongCard key={song.id} song={song} />
-                ))}
-            </HorizontalSection>
+            {recentlyPlayed.length > 0 && (
+                <HorizontalSection title="Recently Played">
+                    {recentlyPlayed.map(track => (
+                        <SongCard key={track.id} track={track} />
+                    ))}
+                </HorizontalSection>
+            )}
             <HorizontalSection title="Artists">
                 {isLoading ? (
                     renderArtistSkeletons(8)

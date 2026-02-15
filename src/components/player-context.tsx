@@ -29,6 +29,7 @@ interface PlayerContextProps {
     isPlaying: boolean;
     isLoading: boolean;
     playedTracks: Track[];
+    recentlyPlayed: Track[];
 
     // utilities
     songToTrack: (song: Song) => Track;
@@ -69,6 +70,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
     const [queue, setQueue] = useState<Track[]>([]);
     const [playedTracks, setPlayedTracks] = useState<Track[]>([]);
+    const [recentlyPlayed, setRecentlyPlayed] = useState<Track[]>([]);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [isLoading, setIsLoading] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -106,6 +108,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         try {
             const savedQueue = localStorage.getItem("player-queue");
             const savedTrack = localStorage.getItem("player-currentTrack");
+            const savedRecent = localStorage.getItem("player-recentlyPlayed");
 
             if (savedQueue) {
                 try {
@@ -125,6 +128,15 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
                 } catch (error) {
                     console.error("Failed to parse saved track:", error);
                     localStorage.removeItem("player-currentTrack");
+                }
+            }
+
+            if (savedRecent) {
+                try {
+                    setRecentlyPlayed(JSON.parse(savedRecent));
+                } catch (error) {
+                    console.error("Failed to parse recently played:", error);
+                    localStorage.removeItem("player-recentlyPlayed");
                 }
             }
         } catch (outerError) {
@@ -162,6 +174,15 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     }, [currentTrack]);
 
+    // save recentlyPlayed to localStorage
+    useEffect(() => {
+        try {
+            localStorage.setItem("player-recentlyPlayed", JSON.stringify(recentlyPlayed));
+        } catch (error) {
+            console.error("Failed to save recently played:", error);
+        }
+    }, [recentlyPlayed]);
+
     // playback controls
     const playTrack = useCallback(
         (track: Track, autoPlay = true, startFromQueue = false) => {
@@ -183,6 +204,12 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
                 setQueue([trackWithAuto]);
                 setPlayedTracks([]);
             }
+
+            // add to recently played (dedup, max 20)
+            setRecentlyPlayed((prev) => {
+                const filtered = prev.filter((t) => t.id !== track.id);
+                return [{ ...track, autoPlay: false }, ...filtered].slice(0, 20);
+            });
 
             if (api) {
                 api.scrobble(track.id).catch((err) =>
@@ -449,6 +476,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
             isPlaying,
             isLoading,
             playedTracks,
+            recentlyPlayed,
 
             playTrack,
             playNext,
@@ -480,6 +508,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
             isPlaying,
             isLoading,
             playedTracks,
+            recentlyPlayed,
             playTrack,
             playNext,
             playPrev,
