@@ -1,0 +1,35 @@
+# Dependencies
+node_modules
+
+# Build output
+.next
+out
+build
+
+# Version control
+.git
+.gitignore
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# IDE / OS
+.vscode
+.idea
+.DS_Store
+*.swp
+*.swo
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Misc
+README.md
+*.md
+coverage
+*.tsbuildinfo
+next-env.d.ts

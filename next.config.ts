@@ -10,6 +10,7 @@ if (!navidromeUrl) {
 const url = new URL(navidromeUrl);
 
 const nextConfig: NextConfig = {
+  output: "standalone",
   images: {
     remotePatterns: [
       {

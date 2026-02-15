@@ -1,0 +1,14 @@
+services:
+  veatunes:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NAVIDROME_URL=${NAVIDROME_URL}
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      - HOSTNAME=0.0.0.0
+    restart: unless-stopped
