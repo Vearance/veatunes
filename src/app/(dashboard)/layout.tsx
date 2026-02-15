@@ -11,7 +11,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             <Header />
             <div className="flex flex-1 overflow-hidden">
                 <Sidebar />
-                <main className="flex-1 overflow-y-auto bg-foreground ml-[5px] mr-[10px] mb-[10px] p-4 rounded-2xl custom-scrollbar">
+                <main className="flex-1 overflow-y-auto bg-foreground ml-[5px] mr-[10px] mb-[10px] p-4 pb-20 rounded-2xl custom-scrollbar">
                     {/* <ScrollArea className="h-full"> */}
                         {children}
                     {/* </ScrollArea> */}

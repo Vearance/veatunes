@@ -26,7 +26,7 @@ export default function AlbumDetailPage() {
     const [loading, setLoading] = useState(true)
     const [favorited, setFavorited] = useState(false)
 
-    const { playTrack, playAlbum } = usePlayer()
+    const { playTrack, playAlbum, currentTrack, isPlaying, setIsPlaying, shuffle, toggleShuffle, songToTrack } = usePlayer()
 
     // Memoize computed values, must be before early returns
     const coverUrl = useMemo(() => {
@@ -139,11 +139,20 @@ export default function AlbumDetailPage() {
                         <Button
                             asChild
                             variant="ghost"
-                            onClick={() => playAlbum(album.id)}
+                            onClick={() => {
+                                const isPlayingThisAlbum = currentTrack && songs.some(s => s.id === currentTrack.id);
+                                if (isPlayingThisAlbum && isPlaying) {
+                                    setIsPlaying(false);
+                                } else if (isPlayingThisAlbum) {
+                                    setIsPlaying(true);
+                                } else {
+                                    playAlbum(album.id);
+                                }
+                            }}
                             className="h-8 w-8 text-border hover:text-secondary hover:bg-transparent cursor-pointer select-none p-0">
                             <Image
-                                src="/icons/playtosc.svg"
-                                alt="Play"
+                                src={currentTrack && songs.some(s => s.id === currentTrack.id) && isPlaying ? "/icons/pausetosc.svg" : "/icons/playtosc.svg"}
+                                alt={currentTrack && songs.some(s => s.id === currentTrack.id) && isPlaying ? "Pause" : "Play"}
                                 width={24}
                                 height={24}
                                 draggable={false}
@@ -153,8 +162,15 @@ export default function AlbumDetailPage() {
                         <Button
                             asChild
                             variant="ghost"
-                            className="text-border hover:text-secondary hover:bg-transparent cursor-pointer p-0">
-                            <Shuffle size={24} />
+                            onClick={toggleShuffle}
+                            className={`text-border hover:text-secondary hover:bg-transparent cursor-pointer p-0 ${shuffle ? 'opacity-100' : 'opacity-40'}`}>
+                            <Image
+                                src="/icons/shuffle.svg"
+                                alt="Shuffle"
+                                width={22}
+                                height={22}
+                                draggable={false}
+                            />
                         </Button>
 
                         <Button
