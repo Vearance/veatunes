@@ -11,8 +11,6 @@ services:
       - .env
     environment:
       - HOSTNAME=0.0.0.0
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     restart: unless-stopped
-
-# volumes:
-#   - /srv/navidrome/music:/music:ro
-#   - /srv/navidrome/moods:/moods:ro
