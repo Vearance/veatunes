@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { usePlayer } from '@/components/player-context';
+import { useUI } from '@/components/ui-context';
 import Image from "next/image";
-// import { useNavidrome } from "@/components/navidrome-context";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { formatDuration } from "@/lib/song-utils";
@@ -38,6 +38,7 @@ export function PlayerBar() {
         setVolume,
         toggleMute,
     } = usePlayer();
+    const { queueOpen, toggleQueue } = useUI();
 
     // const audioRef = useRef<HTMLAudioElement | null>(null);
     const [progressPercent, setProgressPercent] = useState(0);
@@ -268,7 +269,8 @@ export function PlayerBar() {
                 <Button
                     asChild
                     variant="ghost"
-                    className="h-5 w-5 p-0 hover:bg-transparent cursor-pointer select-none"
+                    onClick={toggleQueue}
+                    className={`h-5 w-5 p-0 hover:bg-transparent cursor-pointer select-none ${queueOpen ? 'opacity-100' : 'opacity-60'}`}
                 >
                     <Image
                         src="/icons/queue.svg"

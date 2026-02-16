@@ -245,6 +245,16 @@ export default function ArtistDetailPage() {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
+                                <DropdownMenuItem
+                                    onClick={() => {
+                                        songs.forEach(song => {
+                                            const track = songToTrack(song);
+                                            addToQueue(track);
+                                        });
+                                    }}
+                                >
+                                    Add All to Queue
+                                </DropdownMenuItem>
                                 <DropdownMenuItem>
                                     Share Artist
                                 </DropdownMenuItem>
@@ -328,6 +338,38 @@ export default function ArtistDetailPage() {
                                                 />
                                             )}
                                         </Button>
+
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="w-6 h-6 p-0 hover:bg-transparent opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <MoreHorizontal className="w-4 h-4 text-zinc-400" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent>
+                                                <DropdownMenuItem
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        const track = songToTrack(song);
+                                                        addToQueue(track);
+                                                    }}
+                                                >
+                                                    Add to Queue
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleSongFavorite(song);
+                                                    }}
+                                                >
+                                                    {song.starred ? "Remove from Favorites" : "Add to Favorites"}
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </div>
                                 </div>
                             ))}

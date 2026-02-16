@@ -35,6 +35,7 @@ export default function SongsPage() {
         songToTrack,
         playTrack,
         playArtist,
+        addToQueue,
         currentTrack,
         isPlaying,
         setIsPlaying,
@@ -429,6 +430,14 @@ export default function SongsPage() {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent>
+                                                <DropdownMenuItem
+                                                    onClick={() => {
+                                                        const track = songToTrack(song);
+                                                        addToQueue(track);
+                                                    }}
+                                                >
+                                                    Add to Queue
+                                                </DropdownMenuItem>
                                                 <DropdownMenuItem
                                                     onClick={() => handleSongFavorite(song)}
                                                 >

@@ -26,7 +26,7 @@ export default function AlbumDetailPage() {
     const [loading, setLoading] = useState(true)
     const [favorited, setFavorited] = useState(false)
 
-    const { playTrack, playAlbum, currentTrack, isPlaying, setIsPlaying, shuffle, toggleShuffle, songToTrack } = usePlayer()
+    const { playTrack, playAlbum, currentTrack, isPlaying, setIsPlaying, shuffle, toggleShuffle, songToTrack, addToQueue, addAlbumToQueue } = usePlayer()
 
     // Memoize computed values, must be before early returns
     const coverUrl = useMemo(() => {
@@ -220,6 +220,11 @@ export default function AlbumDetailPage() {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
+                                <DropdownMenuItem
+                                    onClick={() => addAlbumToQueue(album.id)}
+                                >
+                                    Add All to Queue
+                                </DropdownMenuItem>
                                 <DropdownMenuItem>
                                     Add to Playlist
                                 </DropdownMenuItem>
@@ -301,6 +306,38 @@ export default function AlbumDetailPage() {
                                         />
                                     )}
                                 </Button>
+
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="w-6 h-6 p-0 hover:bg-transparent opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <MoreHorizontal className="w-4 h-4 text-zinc-400" />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                        <DropdownMenuItem
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                const track = songToTrack(song);
+                                                addToQueue(track);
+                                            }}
+                                        >
+                                            Add to Queue
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleSongFavorite(song);
+                                            }}
+                                        >
+                                            {song.starred ? "Remove from Favorites" : "Add to Favorites"}
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             </div>
                         </div>
                     ))}
