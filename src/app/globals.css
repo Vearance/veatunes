@@ -172,3 +172,8 @@
 .hide-horizontal-scrollbar {
   scrollbar-width: none;
 }
+
+@keyframes equalizer {
+  0%, 100% { height: 4px; }
+  50% { height: 16px; }
+}
