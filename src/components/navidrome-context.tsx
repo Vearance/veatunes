@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { getNavidromeAPI, Album, Artist, Song, Playlist, AlbumInfo, ArtistInfo } from '@/lib/navidrome';
+import { getNavidromeAPI, Album, Artist, Song, Playlist, AlbumInfo, ArtistInfo, MusicFolder } from '@/lib/navidrome';
 import { useCallback } from 'react';
 
 interface NavidromeContextType {
@@ -12,6 +12,7 @@ interface NavidromeContextType {
     albums: Album[];
     artists: Artist[];
     playlists: Playlist[];
+    musicFolders: MusicFolder[];
 
     // Loading states
     isLoading: boolean;
@@ -54,6 +55,7 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
     const [albums, setAlbums] = useState<Album[]>([]);
     const [artists, setArtists] = useState<Artist[]>([]);
     const [playlists, setPlaylists] = useState<Playlist[]>([]);
+    const [musicFolders, setMusicFolders] = useState<MusicFolder[]>([]);
 
     const [albumsLoading, setAlbumsLoading] = useState(false);
     const [artistsLoading, setArtistsLoading] = useState(false);
@@ -134,9 +136,19 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
         }
     }, [api]);
 
+    const loadMusicFolders = useCallback(async () => {
+        if (!api) return;
+        try {
+            const folders = await api.getMusicFolders();
+            setMusicFolders(folders);
+        } catch (err) {
+            console.error('Failed to load music folders:', err);
+        }
+    }, [api]);
+
     const refreshData = useCallback(async () => {
-        await Promise.all([loadAlbums(), loadArtists(), loadPlaylists()]);
-    }, [loadAlbums, loadArtists, loadPlaylists]);
+        await Promise.all([loadAlbums(), loadArtists(), loadPlaylists(), loadMusicFolders()]);
+    }, [loadAlbums, loadArtists, loadPlaylists, loadMusicFolders]);
 
     const searchMusic = async (query: string) => {
         if (!api) {
@@ -413,6 +425,7 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
         albums,
         artists,
         playlists,
+        musicFolders,
 
         // Loading states
         isLoading,

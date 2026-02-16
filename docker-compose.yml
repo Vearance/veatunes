@@ -12,3 +12,7 @@ services:
     environment:
       - HOSTNAME=0.0.0.0
     restart: unless-stopped
+
+# volumes:
+#   - /srv/navidrome/music:/music:ro
+#   - /srv/navidrome/moods:/moods:ro

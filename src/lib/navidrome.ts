@@ -126,6 +126,11 @@ export interface User {
     avatarLastChanged?: string;
 }
 
+export interface MusicFolder {
+    id: number;
+    name: string;
+}
+
 export default class NavidromeAPI {
     private config: NavidromeConfig;
     private clientName = 'veatunes';
@@ -193,8 +198,16 @@ export default class NavidromeAPI {
         return userData;
     }
 
-    async getArtists(): Promise<Artist[]> {
-        const response = await this.makeRequest('getArtists');
+    async getMusicFolders(): Promise<MusicFolder[]> {
+        const response = await this.makeRequest('getMusicFolders');
+        const data = response.musicFolders as { musicFolder?: MusicFolder[] } | undefined;
+        return data?.musicFolder || [];
+    }
+
+    async getArtists(musicFolderId?: number): Promise<Artist[]> {
+        const params: Record<string, string | number> = {};
+        if (musicFolderId !== undefined) params.musicFolderId = musicFolderId;
+        const response = await this.makeRequest('getArtists', params);
         const artists: Artist[] = [];
 
         const artistListData = response.artists as { index?: Array<{ artist?: Artist[] }> };
@@ -218,12 +231,14 @@ export default class NavidromeAPI {
         };
     }
 
-    async getAlbums(type?: 'newest' | 'recent' | 'frequent' | 'random' | 'alphabeticalByName' | 'alphabeticalByArtist' | 'starred' | 'highest', size: number = 500, offset: number = 0): Promise<Album[]> {
-        const response = await this.makeRequest('getAlbumList2', {
+    async getAlbums(type?: 'newest' | 'recent' | 'frequent' | 'random' | 'alphabeticalByName' | 'alphabeticalByArtist' | 'starred' | 'highest', size: number = 500, offset: number = 0, musicFolderId?: number): Promise<Album[]> {
+        const params: Record<string, string | number> = {
             type: type || 'newest',
             size,
             offset
-        });
+        };
+        if (musicFolderId !== undefined) params.musicFolderId = musicFolderId;
+        const response = await this.makeRequest('getAlbumList2', params);
         const albumListData = response.albumList2 as { album?: Album[] };
         return albumListData?.album || [];
     }
@@ -394,14 +409,16 @@ export default class NavidromeAPI {
         return playedDuration >= Math.min(minimumTime, halfTrackTime);
     }
 
-    async getAllSongs(size = 500, offset = 0): Promise<Song[]> {
-        const response = await this.makeRequest('search3', {
+    async getAllSongs(size = 500, offset = 0, musicFolderId?: number): Promise<Song[]> {
+        const params: Record<string, string | number> = {
             query: '',
             songCount: size,
             songOffset: offset,
             artistCount: 0,
             albumCount: 0
-        });
+        };
+        if (musicFolderId !== undefined) params.musicFolderId = musicFolderId;
+        const response = await this.makeRequest('search3', params);
 
         const searchData = response.searchResult3 as { song?: Song[] };
         return searchData?.song || [];

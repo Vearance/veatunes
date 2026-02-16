@@ -294,9 +294,9 @@ export default function Header() {
                             <DropdownMenuItem>Now Playing</DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem>Server Uptime</DropdownMenuItem>
-                            <DropdownMenuItem>Folders:</DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem>Quick scan & Full scan</DropdownMenuItem>
+                            <DropdownMenuItem>Quick scan</DropdownMenuItem>
+                            <DropdownMenuItem>Full scan</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
 
@@ -337,6 +337,8 @@ export default function Header() {
                     <DropdownMenuContent className="w-40">
                         <DropdownMenuItem>Profile</DropdownMenuItem>
                         <DropdownMenuItem>Settings</DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>Install App</DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={handleLogout} className="text-red-500">Log out</DropdownMenuItem>
                     </DropdownMenuContent>
