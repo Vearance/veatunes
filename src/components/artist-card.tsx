@@ -47,9 +47,9 @@ export default function ArtistCard({ artist }: ArtistCardProps) {
         <Link
             ref={cardRef}
             href={`/artist/${artist.id}`}
-            className="w-[170px] h-[253px] flex flex-col items-center cursor-pointer group"
+            className="w-[140px] sm:w-[170px] flex flex-col items-center cursor-pointer group"
         >
-            <div className="relative w-[170px] h-[170px] overflow-hidden rounded-full bg-zinc-800">
+            <div className="relative w-[140px] h-[140px] sm:w-[170px] sm:h-[170px] overflow-hidden rounded-full bg-zinc-800">
                 <Image
                     src={coverUrl || "/artistplaceholder.svg"}
                     alt={`Artist ${artist.name || "Unknown Artist"}`}

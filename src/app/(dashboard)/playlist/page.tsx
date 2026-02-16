@@ -40,10 +40,10 @@ export default function PlaylistPage() {
     if (playlistsLoading) {
         return (
             <div className="p-4">
-                <div className="grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-6">
+                <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-4 md:gap-6">
                     {Array.from({ length: 12 }).map((_, i) => (
-                        <div key={i} className="w-[170px] h-[253px] flex flex-col space-y-2 animate-pulse">
-                            <Skeleton className="w-[170px] h-[170px] rounded-lg bg-zinc-800" />
+                        <div key={i} className="w-[140px] sm:w-[170px] flex flex-col space-y-2 animate-pulse">
+                            <Skeleton className="w-[140px] h-[140px] sm:w-[170px] sm:h-[170px] rounded-lg bg-zinc-800" />
                             <Skeleton className="h-2 w-3/4 bg-zinc-700" />
                             <Skeleton className="h-1.5 w-1/2 bg-zinc-700" />
                         </div>
@@ -55,7 +55,7 @@ export default function PlaylistPage() {
 
     return (
         <div className="p-4">
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-6">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-4 md:gap-6">
                 {playlists.map(pl => (
                     <PlaylistCard key={pl.id} playlist={pl} />
                 ))}
@@ -64,14 +64,14 @@ export default function PlaylistPage() {
                 {!showInput ? (
                     <div
                         onClick={() => setShowInput(true)}
-                        className="w-[170px] h-[253px] flex flex-col cursor-pointer group"
+                        className="w-[140px] sm:w-[170px] flex flex-col cursor-pointer group"
                     >
                         <div className="relative flex flex-col items-center">
-                            <div className="bg-[#73737326] w-[133px] h-[3px] rounded-t-[7.25px]" />
+                            <div className="bg-[#73737326] w-[110px] sm:w-[133px] h-[3px] rounded-t-[7.25px]" />
                             <div className="h-[1px]" />
-                            <div className="bg-[#7373734D] w-[154px] h-[6px] rounded-t-[7.25px]" />
+                            <div className="bg-[#7373734D] w-[128px] sm:w-[154px] h-[6px] rounded-t-[7.25px]" />
                             <div className="h-[1px]" />
-                            <div className="relative w-[170px] h-[170px] rounded-lg overflow-hidden bg-zinc-800/50 border-2 border-dashed border-zinc-700 flex items-center justify-center group-hover:border-zinc-500 group-hover:bg-zinc-800 transition-colors">
+                            <div className="relative w-[140px] h-[140px] sm:w-[170px] sm:h-[170px] rounded-lg overflow-hidden bg-zinc-800/50 border-2 border-dashed border-zinc-700 flex items-center justify-center group-hover:border-zinc-500 group-hover:bg-zinc-800 transition-colors">
                                 <Plus size={36} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />
                             </div>
                         </div>
@@ -85,13 +85,13 @@ export default function PlaylistPage() {
                         </p>
                     </div>
                 ) : (
-                    <div className="w-[170px] h-[253px] flex flex-col">
+                    <div className="w-[140px] sm:w-[170px] flex flex-col">
                         <div className="relative flex flex-col items-center">
-                            <div className="bg-[#73737326] w-[133px] h-[3px] rounded-t-[7.25px]" />
+                            <div className="bg-[#73737326] w-[110px] sm:w-[133px] h-[3px] rounded-t-[7.25px]" />
                             <div className="h-[1px]" />
-                            <div className="bg-[#7373734D] w-[154px] h-[6px] rounded-t-[7.25px]" />
+                            <div className="bg-[#7373734D] w-[128px] sm:w-[154px] h-[6px] rounded-t-[7.25px]" />
                             <div className="h-[1px]" />
-                            <div className="relative w-[170px] h-[170px] rounded-lg overflow-hidden bg-zinc-800 border-2 border-zinc-600 flex flex-col items-center justify-center gap-3 p-4">
+                            <div className="relative w-[140px] h-[140px] sm:w-[170px] sm:h-[170px] rounded-lg overflow-hidden bg-zinc-800 border-2 border-zinc-600 flex flex-col items-center justify-center gap-3 p-4">
                                 <input
                                     type="text"
                                     value={newName}

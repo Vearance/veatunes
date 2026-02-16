@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Search, Settings, ChartNoAxesColumn, UserRound } from "lucide-react";
 import { useNavidrome } from '@/components/navidrome-context';
 import { usePlayer } from '@/components/player-context';
+import { useUI } from '@/components/ui-context';
 import { User, Artist, Album, Song } from '@/lib/navidrome';
 import { Button } from "@/components/ui/button";
 import {
@@ -34,6 +35,7 @@ import { formatDuration } from "@/lib/song-utils";
 export default function Header() {
     const { api, isConnected } = useNavidrome();
     const { songToTrack, playTrack } = usePlayer();
+    const { toggleMobileSidebar } = useUI();
     const router = useRouter();
     const [userInfo, setUserInfo] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
@@ -147,24 +149,37 @@ export default function Header() {
     }
 
     return (
-        <header className="grid grid-cols-[274px_1fr_274px] items-center mb-4">
-            <div className="flex justify-center">
+        <header className="flex md:grid md:grid-cols-[274px_1fr_274px] items-center mb-2 md:mb-4 px-3 md:px-0 gap-2 md:gap-0">
+            {/* mobile: hamburger + logo | desktop: centered logo */}
+            <div className="flex items-center md:justify-center gap-3">
+                {/* hamburger - mobile only */}
+                <button
+                    onClick={toggleMobileSidebar}
+                    className="md:hidden p-1 text-zinc-400 hover:text-white"
+                    aria-label="Open menu"
+                >
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                </button>
                 <Link href="/" className="flex items-center">
                     <Image
                         src="/logo.png"
                         alt="Logo"
                         width={115}
                         height={39}
-                        className="object-contain"
+                        className="object-contain md:w-[115px] w-[90px]"
                     />
                 </Link>
             </div>
 
             {/* search bar with dropdown */}
-            <div className="flex items-center justify-self-center relative" ref={searchRef}>
+            <div className="flex items-center justify-self-center relative flex-1 md:flex-none" ref={searchRef}>
                 <div className="flex items-center gap-2 w-full max-w-[331px]">
                     <Search
-                        className="text-secondary shrink-0 mr-1"
+                        className="text-secondary shrink-0 mr-1 hidden md:block"
                         size={24} />
                     <Input
                         type="text"
@@ -173,13 +188,13 @@ export default function Header() {
                         onChange={(e) => handleSearchChange(e.target.value)}
                         onFocus={() => { if (searchResults) setShowResults(true); }}
                         onKeyDown={handleKeyDown}
-                        className="bg-input text-zinc-300 placeholder-zinc-500 font-satoshi rounded-sm border-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                        className="bg-input text-zinc-300 placeholder-zinc-500 font-satoshi rounded-sm border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm md:text-base"
                     />
                 </div>
 
                 {/* search results dropdown */}
                 {showResults && searchQuery.trim() && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-foreground border border-zinc-700 rounded-lg shadow-2xl z-50 overflow-hidden max-h-[420px] overflow-y-auto custom-scrollbar w-[370px]">
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-foreground border border-zinc-700 rounded-lg shadow-2xl z-50 overflow-hidden max-h-[420px] overflow-y-auto custom-scrollbar w-full md:w-[370px]">
                         {isSearching ? (
                             <p className="text-zinc-500 text-sm p-4 text-center">Searching…</p>
                         ) : !hasResults ? (
@@ -273,14 +288,14 @@ export default function Header() {
                 )}
             </div>
 
-            <div className="flex items-center justify-end gap-4 pr-5">
+            <div className="flex items-center justify-end gap-2 md:gap-4 md:pr-5">
                 <TooltipProvider delayDuration={100}>
                     <DropdownMenu>
                         <Tooltip>
                             <TooltipTrigger asChild>
                                 <DropdownMenuTrigger asChild>
                                     <ChartNoAxesColumn
-                                        className="text-secondary cursor-pointer"
+                                        className="text-secondary cursor-pointer hidden md:block"
                                         size={24}
                                     />
                                 </DropdownMenuTrigger>
@@ -305,7 +320,7 @@ export default function Header() {
                             <TooltipTrigger asChild>
                                 <DropdownMenuTrigger asChild>
                                     <Settings
-                                        className="text-secondary cursor-pointer"
+                                        className="text-secondary cursor-pointer hidden md:block"
                                         size={24}
                                     />
                                 </DropdownMenuTrigger>

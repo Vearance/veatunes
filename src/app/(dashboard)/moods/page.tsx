@@ -61,11 +61,11 @@ export default function MoodsPage() {
 
     return (
         <div className="p-4">
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-6">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-4 md:gap-6">
                 {loading ? (
                     Array.from({ length: 12 }).map((_, i) => (
-                        <div key={i} className="w-[170px] h-[253px] flex flex-col space-y-2 animate-pulse">
-                            <Skeleton className="w-[170px] h-[170px] rounded-lg bg-zinc-800" />
+                        <div key={i} className="w-[140px] sm:w-[170px] flex flex-col space-y-2 animate-pulse">
+                            <Skeleton className="w-[140px] h-[140px] sm:w-[170px] sm:h-[170px] rounded-lg bg-zinc-800" />
                             <Skeleton className="h-2 w-3/4 bg-zinc-700" />
                             <Skeleton className="h-1.5 w-1/2 bg-zinc-700" />
                         </div>

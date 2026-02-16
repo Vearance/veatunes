@@ -32,8 +32,8 @@ export default function AlbumPage() {
     if (!albums.length) return <p className="text-zinc-400 p-4">No albums found.</p>;
 
     return (
-        <div className="p-6">
-            <div className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-1">
+        <div className="p-3 md:p-6">
+            <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-1">
                 {albums.map((album) => {
                     const coverUrl = album.coverArt
                         ? api?.getCoverArtUrl(album.coverArt, 300)

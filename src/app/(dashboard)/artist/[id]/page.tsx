@@ -153,9 +153,9 @@ export default function ArtistDetailPage() {
     if (!artist) return <p className="text-zinc-400 p-4">Artist not found.</p>;
 
     return (
-        <div className="p-4 space-y-6">
-            <div className="flex items-start gap-6">
-                <div className="relative w-[170px] h-[170px] rounded-lg overflow-hidden bg-zinc-800">
+        <div className="p-2 md:p-4 space-y-4 md:space-y-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 md:gap-6">
+                <div className="relative w-[140px] h-[140px] md:w-[170px] md:h-[170px] rounded-lg overflow-hidden bg-zinc-800 shrink-0">
                     <Image
                         src={coverUrl}
                         alt={`Cover art for ${artist.name}`}
@@ -164,9 +164,9 @@ export default function ArtistDetailPage() {
                     />
                 </div>
 
-                <div className="flex flex-col justify-between h-[170px]">
+                <div className="flex flex-col sm:justify-between sm:h-[170px] items-center sm:items-start text-center sm:text-left">
                     <div>
-                        <h1 className="text-2xl font-semibold text-zinc-100">
+                        <h1 className="text-xl md:text-2xl font-semibold text-zinc-100">
                             {artist.name}
                         </h1>
                         <p className="text-sm text-zinc-500 mt-1">
@@ -174,7 +174,7 @@ export default function ArtistDetailPage() {
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-6 mt-4">
+                    <div className="flex items-center gap-4 md:gap-6 mt-3 md:mt-4">
                         <Button
                             asChild
                             variant="ghost"
@@ -389,7 +389,7 @@ export default function ArtistDetailPage() {
                         No albums found for this artist.
                     </p>
                 ) : (
-                    <div className="grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-3 px-2">
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] sm:grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-3 px-2">
                         {albums.map((album) => (
                             <AlbumCard key={album.id} album={album} />
                         ))}

@@ -29,15 +29,15 @@ export default function HorizontalSection({ title, children }: HorizontalSection
     };
 
     return (
-        <section className="mb-8 w-full">
+        <section className="mb-6 md:mb-8 w-full">
             <div className="flex items-center justify-between mb-3 relative">
-                <h2 className="text-lg font-semibold text-primary truncate">{title}</h2>
+                <h2 className="text-base md:text-lg font-semibold text-primary truncate">{title}</h2>
                 <div className="flex items-center gap-2 flex-shrink-0">
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={() => scroll("left")}
-                        className="h-8 w-8 text-zinc-400 hover:text-zinc-300 hover:bg-transparent"
+                        className="h-8 w-8 text-zinc-400 hover:text-zinc-300 hover:bg-transparent hidden md:flex"
                     >
                         <ArrowLeft size={18} />
                     </Button>
@@ -45,7 +45,7 @@ export default function HorizontalSection({ title, children }: HorizontalSection
                         variant="ghost"
                         size="icon"
                         onClick={() => scroll("right")}
-                        className="h-8 w-8 text-zinc-400 hover:text-zinc-300 hover:bg-transparent"
+                        className="h-8 w-8 text-zinc-400 hover:text-zinc-300 hover:bg-transparent hidden md:flex"
                     >
                         <ArrowRight size={18} />
                     </Button>
@@ -71,7 +71,7 @@ export default function HorizontalSection({ title, children }: HorizontalSection
             <div className="relative w-full">
                 <div
                     ref={scrollRef}
-                    className="flex gap-4 overflow-hidden"
+                    className="flex gap-3 md:gap-4 overflow-x-auto md:overflow-hidden hide-horizontal-scrollbar -mx-1 px-1"
                 >
                     {children}
                 </div>

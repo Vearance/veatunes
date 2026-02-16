@@ -17,9 +17,9 @@ export default function AlbumCard({ album }: AlbumCardProps) {
     return (
         <Link
             href={`/album/${album.id}`}
-            className="w-[170px] h-[253px] flex flex-col cursor-pointer group"
+            className="w-[140px] sm:w-[170px] flex flex-col cursor-pointer group"
         >
-            <div className="relative w-[170px] h-[170px] overflow-hidden rounded-lg bg-zinc-800">
+            <div className="relative w-[140px] h-[140px] sm:w-[170px] sm:h-[170px] overflow-hidden rounded-lg bg-zinc-800">
                 <Image
                     src={coverUrl || "/albumplaceholder.svg"}
                     alt={`Cover art for ${album.name || "Unknown Album"}`}

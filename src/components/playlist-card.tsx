@@ -36,18 +36,18 @@ export default function PlaylistCard({ playlist }: PlaylistCardProps) {
     const previewTitles = titles ? titles.join(", ") : null;
 
     return (
-        <Link href={`/playlist/${playlist.id}`} className="w-[170px] h-[253px] flex flex-col cursor-pointer group">
+        <Link href={`/playlist/${playlist.id}`} className="w-[140px] sm:w-[170px] flex flex-col cursor-pointer group">
             <div className="relative flex flex-col items-center">
 
-                <div className="bg-[#73737326] w-[133px] h-[3px] rounded-t-[7.25px]" />
+                <div className="bg-[#73737326] w-[110px] sm:w-[133px] h-[3px] rounded-t-[7.25px]" />
 
                 <div className="h-[1px]" />
 
-                <div className="bg-[#7373734D] w-[154px] h-[6px] rounded-t-[7.25px]" />
+                <div className="bg-[#7373734D] w-[128px] sm:w-[154px] h-[6px] rounded-t-[7.25px]" />
 
                 <div className="h-[1px]" />
 
-                <div className="relative w-[170px] h-[170px] rounded-lg overflow-hidden bg-zinc-800">
+                <div className="relative w-[140px] h-[140px] sm:w-[170px] sm:h-[170px] rounded-lg overflow-hidden bg-zinc-800">
                     <Image
                         src={coverUrl || "/songplaceholder.svg"}
                         alt={`Cover art for ${playlist.name || "Unknown Playlist"}`}

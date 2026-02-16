@@ -115,10 +115,10 @@ export default function PlaylistDetailPage() {
     if (!playlist) return <p className="text-zinc-400 p-4">Playlist not found.</p>;
 
     return (
-        <div className="p-4 space-y-6">
+        <div className="p-2 md:p-4 space-y-4 md:space-y-6">
             {/* header section */}
-            <div className="flex items-start gap-6">
-                <div className="relative w-[170px] h-[170px] rounded-lg overflow-hidden bg-zinc-800">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 md:gap-6">
+                <div className="relative w-[140px] h-[140px] md:w-[170px] md:h-[170px] rounded-lg overflow-hidden bg-zinc-800 shrink-0">
                     <Image
                         src={coverUrl}
                         alt={`Cover art for ${playlist.name || "Unknown Playlist"}`}
@@ -126,10 +126,10 @@ export default function PlaylistDetailPage() {
                         className="object-cover"
                     />
                 </div>
-                <div className="flex flex-col justify-between h-[170px]">
+                <div className="flex flex-col sm:justify-between sm:h-[170px] items-center sm:items-start text-center sm:text-left">
                     <div>
                         <p className="text-xs text-zinc-500 uppercase tracking-wider">Playlist</p>
-                        <h1 className="text-2xl font-semibold text-zinc-100 mt-1">
+                        <h1 className="text-xl md:text-2xl font-semibold text-zinc-100 mt-1">
                             {playlist.name}
                         </h1>
                         {playlist.comment && (
@@ -141,7 +141,7 @@ export default function PlaylistDetailPage() {
                             {playlist.owner && ` • by ${playlist.owner}`}
                         </p>
                     </div>
-                    <div className="flex items-center gap-6 mt-4">
+                    <div className="flex items-center gap-4 md:gap-6 mt-3 md:mt-4">
                         <Button
                             asChild
                             variant="ghost"
@@ -204,10 +204,10 @@ export default function PlaylistDetailPage() {
             <div>
                 <div className="flex items-center text-xs text-zinc-500 px-2">
                     <span className="w-8 text-right">#</span>
-                    <span className="w-10 ml-3" />
+                    <span className="w-10 ml-3 hidden sm:block" />
                     <span className="flex-1 ml-3">Title</span>
                     <span className="w-[140px] text-left hidden md:block">Album</span>
-                    <span className="w-12 text-right mr-12">Time</span>
+                    <span className="w-12 text-right mr-0 md:mr-12">Time</span>
                 </div>
 
                 <Separator className="my-1.5 h-[2px] bg-border/75" />
@@ -257,7 +257,7 @@ export default function PlaylistDetailPage() {
                                     </div>
 
                                     {/* cover art */}
-                                    <div className="relative w-10 h-10 flex-shrink-0 rounded overflow-hidden bg-zinc-800 ml-3">
+                                    <div className="relative w-10 h-10 flex-shrink-0 rounded overflow-hidden bg-zinc-800 ml-3 hidden sm:block">
                                         <Image
                                             src={songCover}
                                             alt={song.title}
@@ -301,7 +301,7 @@ export default function PlaylistDetailPage() {
 
                                     {/* actions */}
                                     <div
-                                        className="flex gap-1 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        className="hidden sm:flex gap-1 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <Button

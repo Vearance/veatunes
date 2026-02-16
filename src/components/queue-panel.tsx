@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { usePlayer } from "@/components/player-context";
 import { useUI } from "@/components/ui-context";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Minus, X, Trash2 } from "lucide-react";
@@ -17,7 +18,7 @@ export function QueuePanel() {
         removeTrackFromQueue,
         skipToTrackInQueue,
     } = usePlayer();
-    const { queueOpen, toggleQueue } = useUI();
+    const { queueOpen, toggleQueue, isMobile } = useUI();
 
     if (!queueOpen) return null;
 
@@ -30,7 +31,20 @@ export function QueuePanel() {
     const upNextStartIndex = currentIndex >= 0 ? currentIndex + 1 : 0;
 
     return (
-        <aside className="w-[320px] bg-foreground mb-[10px] mr-[10px] rounded-2xl flex flex-col overflow-hidden shrink-0 transition-all duration-300">
+        <>
+            {/* mobile backdrop */}
+            {isMobile && (
+                <div
+                    className="fixed inset-0 bg-black/60 z-40"
+                    onClick={toggleQueue}
+                />
+            )}
+            <aside className={cn(
+                "bg-foreground flex flex-col overflow-hidden shrink-0 transition-all duration-300",
+                isMobile
+                    ? "fixed inset-x-0 bottom-0 top-0 z-50 rounded-none"
+                    : "w-[320px] mb-[10px] mr-[10px] rounded-2xl"
+            )}>
             {/* header */}
             <div className="flex items-center justify-between p-4 pb-2 shrink-0">
                 <h2 className="text-sm font-semibold text-zinc-100">Queue</h2>
@@ -139,5 +153,6 @@ export function QueuePanel() {
                 </div>
             </div>
         </aside>
+        </>
     );
 }

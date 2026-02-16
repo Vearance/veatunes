@@ -226,9 +226,9 @@ export default function SongsPage() {
     }
 
     return (
-        <div className="p-4 space-y-4">
+        <div className="p-2 md:p-4 space-y-4">
             {/* action bar: play, shuffle, spacer, song count, search */}
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-3 md:gap-5">
                 <Button
                     asChild
                     variant="ghost"
@@ -262,7 +262,7 @@ export default function SongsPage() {
                 <div className="flex-1" />
 
                 {/* inline search */}
-                <div className="relative w-64">
+                <div className="relative w-40 md:w-64">
                     <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
                     <input
                         type="text"
@@ -278,7 +278,7 @@ export default function SongsPage() {
             <div>
                 <div className="flex items-center text-xs text-zinc-500 px-2 select-none">
                     <span className="w-8 text-right">#</span>
-                    <span className="w-10 ml-3" />
+                    <span className="w-10 ml-3 hidden sm:block" />
                     <button
                         onClick={() => handleSort("title")}
                         className="flex-1 ml-3 text-left hover:text-zinc-300 transition-colors cursor-pointer"
@@ -293,7 +293,7 @@ export default function SongsPage() {
                     </button>
                     <button
                         onClick={() => handleSort("duration")}
-                        className="w-12 text-right hover:text-zinc-300 transition-colors cursor-pointer mr-12"
+                        className="w-12 text-right hover:text-zinc-300 transition-colors cursor-pointer mr-0 md:mr-12"
                     >
                         Time{sortArrow("duration")}
                     </button>
@@ -349,7 +349,7 @@ export default function SongsPage() {
                                     </div>
 
                                     {/* cover art */}
-                                    <div className="relative w-10 h-10 flex-shrink-0 rounded overflow-hidden bg-zinc-800 ml-3">
+                                    <div className="relative w-10 h-10 flex-shrink-0 rounded overflow-hidden bg-zinc-800 ml-3 hidden sm:block">
                                         <Image
                                             src={coverUrl}
                                             alt={song.title}
@@ -393,7 +393,7 @@ export default function SongsPage() {
 
                                     {/* actions */}
                                     <div
-                                        className="flex gap-1 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        className="hidden sm:flex gap-1 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <Button

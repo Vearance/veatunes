@@ -17,9 +17,9 @@ export default function Home() {
         Array.from({ length: count }).map((_, i) => (
             <div
                 key={`album-skel-${i}`}
-                className="w-[170px] h-[253px] flex flex-col space-y-2 animate-pulse"
+                className="w-[140px] sm:w-[170px] flex flex-col space-y-2 animate-pulse shrink-0"
             >
-                <Skeleton className="w-[170px] h-[170px] rounded-lg bg-zinc-800" />
+                <Skeleton className="w-[140px] h-[140px] sm:w-[170px] sm:h-[170px] rounded-lg bg-zinc-800" />
                 <Skeleton className="h-2 w-3/4 bg-zinc-700" />
                 <Skeleton className="h-1.5 w-1/2 bg-zinc-700" />
             </div>
@@ -29,9 +29,9 @@ export default function Home() {
         Array.from({ length: count }).map((_, i) => (
             <div
                 key={`artist-skel-${i}`}
-                className="w-[170px] h-[253px] flex flex-col items-center space-y-2 animate-pulse"
+                className="w-[140px] sm:w-[170px] flex flex-col items-center space-y-2 animate-pulse shrink-0"
             >
-                <Skeleton className="w-[170px] h-[170px] rounded-full bg-zinc-800" />
+                <Skeleton className="w-[140px] h-[140px] sm:w-[170px] sm:h-[170px] rounded-full bg-zinc-800" />
                 <Skeleton className="h-2 w-3/4 bg-zinc-700" />
                 <Skeleton className="h-1.5 w-1/2 bg-zinc-700" />
             </div>
@@ -41,16 +41,16 @@ export default function Home() {
         Array.from({ length: count }).map((_, i) => (
             <div
                 key={`playlist-skel-${i}`}
-                className="w-[170px] h-[253px] flex flex-col space-y-2 animate-pulse"
+                className="w-[140px] sm:w-[170px] flex flex-col space-y-2 animate-pulse shrink-0"
             >
-                <Skeleton className="w-[170px] h-[170px] rounded-lg bg-zinc-800" />
+                <Skeleton className="w-[140px] h-[140px] sm:w-[170px] sm:h-[170px] rounded-lg bg-zinc-800" />
                 <Skeleton className="h-2 w-3/4 bg-zinc-700" />
                 <Skeleton className="h-1.5 w-1/2 bg-zinc-700" />
             </div>
         ))
 
     return (
-        <div className="space-y-8 px-2">
+        <div className="space-y-6 md:space-y-8 px-1 md:px-2">
             {recentlyPlayed.length > 0 && (
                 <HorizontalSection title="Recently Played">
                     {recentlyPlayed.map(track => (
