@@ -5,6 +5,9 @@ services:
       dockerfile: Dockerfile
       args:
         - NAVIDROME_URL=${NAVIDROME_URL}
+        - NEXT_PUBLIC_NAVIDROME_URL=${NEXT_PUBLIC_NAVIDROME_URL}
+        - NEXT_PUBLIC_NAVIDROME_USER=${NEXT_PUBLIC_NAVIDROME_USER}
+        - NEXT_PUBLIC_NAVIDROME_PASSWORD=${NEXT_PUBLIC_NAVIDROME_PASSWORD}
     ports:
       - "3000:3000"
     env_file:
