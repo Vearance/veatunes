@@ -1,8 +1,8 @@
 <p align="center">
-  <img src="public/favicon/logo-192.png" width="80" alt="Veatunes logo" />
+  <img src="public/logo.png" width="200" alt="Veatunes logo" />
 </p>
 
-<h1 align="center">Veatunes</h1>
+<!-- <h1 align="center">Veatunes</h1> -->
 
 <p align="center">
   A modern, self-hostable web frontend for <a href="https://www.navidrome.org/">Navidrome</a>.
@@ -21,6 +21,16 @@
 
 <!-- TODO: Add a screenshot or GIF here -->
 <!-- ![screenshot](docs/screenshot.png) -->
+## Screenshots
+<p align="center">
+  <img src="public/screenshot/all.png" width="49.5%" />
+  <img src="public/screenshot/artists.png" width="49.5%" />
+  <img src="public/screenshot/artist.png" width="49.5%" />
+  <img src="public/screenshot/album.png" width="49.5%" />
+  <img src="public/screenshot/albums.png" width="49.5%" />
+  <img src="public/screenshot/playlists.png" width="49.5%" />
+</p>
+
 
 ## Features
 
