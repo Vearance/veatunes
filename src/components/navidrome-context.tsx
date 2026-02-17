@@ -78,14 +78,20 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
         setAlbumsLoading(true);
         setError(null);
         try {
-            const recentAlbums = await api.getAlbums('recent', 50);
-            const newestAlbums = await api.getAlbums('newest', 50);
+            // Load albums in parallel instead of sequentially
+            const [recentAlbums, newestAlbums] = await Promise.all([
+                api.getAlbums('recent', 50),
+                api.getAlbums('newest', 50)
+            ]);
 
-            // Combine and deduplicate albums
-            const allAlbums = [...recentAlbums, ...newestAlbums];
-            const uniqueAlbums = allAlbums.filter((album, index, self) =>
-                index === self.findIndex(a => a.id === album.id)
-            );
+            // Optimize deduplication using a Map for O(n) complexity instead of O(n²)
+            const albumMap = new Map<string, Album>();
+            for (const album of [...recentAlbums, ...newestAlbums]) {
+                if (!albumMap.has(album.id)) {
+                    albumMap.set(album.id, album);
+                }
+            }
+            const uniqueAlbums = Array.from(albumMap.values());
 
             setAlbums(uniqueAlbums);
         } catch (err) {
@@ -403,7 +409,8 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
                 const connected = await api.ping();
                 setIsConnected(connected);
                 if (connected) {
-                    await refreshData();
+                    // Call load functions directly to avoid dependency on refreshData
+                    await Promise.all([loadAlbums(), loadArtists(), loadPlaylists()]);
                 } else {
                     setError('Failed to connect to Navidrome server');
                 }
@@ -415,7 +422,8 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
         };
 
         initialize();
-    }, [api, refreshData]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [api]); // Only depend on api, not on the load functions
 
     const value: NavidromeContextType = {
         // API instance

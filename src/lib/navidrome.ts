@@ -135,6 +135,9 @@ export default class NavidromeAPI {
     private config: NavidromeConfig;
     private clientName = 'veatunes';
     private version = '1.16.0';
+    private coverArtUrlCache: Map<string, { url: string; timestamp: number }> = new Map();
+    private readonly COVER_ART_CACHE_TTL = 300000; // 5 minutes in milliseconds
+    private readonly MAX_CACHE_SIZE = 500; // Maximum number of cached URLs
 
     constructor(config: NavidromeConfig) {
         this.config = config;
@@ -342,6 +345,16 @@ export default class NavidromeAPI {
     }
 
     getCoverArtUrl(coverArtId: string, size?: number): string {
+        // Create cache key based on coverArtId and size
+        const cacheKey = `${coverArtId}:${size || 'default'}`;
+        const now = Date.now();
+        
+        // Check if we have a valid cached URL
+        const cached = this.coverArtUrlCache.get(cacheKey);
+        if (cached && (now - cached.timestamp) < this.COVER_ART_CACHE_TTL) {
+            return cached.url;
+        }
+
         const salt = this.generateSalt();
         const token = this.generateToken(this.config.password, salt);
 
@@ -358,7 +371,21 @@ export default class NavidromeAPI {
             params.append('size', size.toString());
         }
 
-        return `${this.config.serverUrl}/rest/getCoverArt?${params.toString()}`;
+        const url = `${this.config.serverUrl}/rest/getCoverArt?${params.toString()}`;
+        
+        // Implement simple LRU-like eviction: if cache is full, remove oldest entry
+        if (this.coverArtUrlCache.size >= this.MAX_CACHE_SIZE) {
+            // Map maintains insertion order, so first key is the oldest
+            const firstKey = this.coverArtUrlCache.keys().next().value;
+            if (firstKey) {
+                this.coverArtUrlCache.delete(firstKey);
+            }
+        }
+        
+        // Cache the generated URL
+        this.coverArtUrlCache.set(cacheKey, { url, timestamp: now });
+        
+        return url;
     }
 
     async star(id: string, type: 'song' | 'album' | 'artist'): Promise<void> {
