@@ -16,7 +16,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Playlist, Song } from "@/lib/navidrome";
 import { formatDuration, formatDurationVerbose } from "@/lib/song-utils";
-import { MoreHorizontal } from "lucide-react";
+import {
+    MoreHorizontal,
+    Shuffle,
+} from "lucide-react";
+import { AddToPlaylistDialog } from "@/components/add-to-playlist-dialog";
 
 export default function PlaylistDetailPage() {
     const { id } = useParams<{ id: string }>();
@@ -37,6 +41,7 @@ export default function PlaylistDetailPage() {
     const [playlist, setPlaylist] = useState<Playlist | null>(null);
     const [songs, setSongs] = useState<Song[]>([]);
     const [loading, setLoading] = useState(true);
+    const [playlistDialogSong, setPlaylistDialogSong] = useState<Song | null>(null);
 
     const coverUrl = useMemo(() => {
         if (playlist?.coverArt && api) {
@@ -330,7 +335,8 @@ export default function PlaylistDetailPage() {
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent>
                                                 <DropdownMenuItem
-                                                    onClick={() => {
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
                                                         const track = songToTrack(song);
                                                         addToQueue(track);
                                                     }}
@@ -338,7 +344,18 @@ export default function PlaylistDetailPage() {
                                                     Add to Queue
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
-                                                    onClick={() => handleSongFavorite(song)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setPlaylistDialogSong(song);
+                                                    }}
+                                                >
+                                                    Add to Playlist
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleSongFavorite(song);
+                                                    }}
                                                 >
                                                     {song.starred ? "Remove from Favorites" : "Add to Favorites"}
                                                 </DropdownMenuItem>
@@ -351,6 +368,13 @@ export default function PlaylistDetailPage() {
                     </div>
                 )}
             </div>
+
+            <AddToPlaylistDialog
+                isOpen={!!playlistDialogSong}
+                onClose={() => setPlaylistDialogSong(null)}
+                songId={playlistDialogSong?.id ?? ""}
+                songTitle={playlistDialogSong?.title}
+            />
         </div>
     );
 }

@@ -23,6 +23,7 @@ import {
     Search,
     ChevronDown,
 } from "lucide-react";
+import { AddToPlaylistDialog } from "@/components/add-to-playlist-dialog";
 
 type SortField = "title" | "artist" | "album" | "duration";
 type SortOrder = "asc" | "desc";
@@ -48,6 +49,8 @@ export default function SongsPage() {
     const [currentPage, setCurrentPage] = useState(1);
     const [sortBy, setSortBy] = useState<SortField>("title");
     const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
+
+    const [playlistDialogSong, setPlaylistDialogSong] = useState<Song | null>(null);
 
     // fetch all songs with batched API calls
     const fetchAllSongs = useCallback(async () => {
@@ -422,7 +425,8 @@ export default function SongsPage() {
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent>
                                                 <DropdownMenuItem
-                                                    onClick={() => {
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
                                                         const track = songToTrack(song);
                                                         addToQueue(track);
                                                     }}
@@ -430,7 +434,18 @@ export default function SongsPage() {
                                                     Add to Queue
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
-                                                    onClick={() => handleSongFavorite(song)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setPlaylistDialogSong(song);
+                                                    }}
+                                                >
+                                                    Add to Playlist
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleSongFavorite(song);
+                                                    }}
                                                 >
                                                     {song.starred ? "Remove from Favorites" : "Add to Favorites"}
                                                 </DropdownMenuItem>
@@ -490,6 +505,13 @@ export default function SongsPage() {
                     </Button>
                 </div>
             )}
+
+            <AddToPlaylistDialog 
+                isOpen={!!playlistDialogSong}
+                onClose={() => setPlaylistDialogSong(null)}
+                songId={playlistDialogSong?.id ?? ""}
+                songTitle={playlistDialogSong?.title}
+            />
         </div>
     );
 }

@@ -17,6 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { Album, Song } from "@/lib/navidrome";
 import { formatDuration, formatDurationVerbose } from "@/lib/song-utils";
 import { Shuffle, MoreHorizontal } from "lucide-react";
+import { AddToPlaylistDialog } from "@/components/add-to-playlist-dialog";
 
 export default function AlbumDetailPage() {
     const { id } = useParams<{ id: string }>()
@@ -25,6 +26,7 @@ export default function AlbumDetailPage() {
     const [songs, setSongs] = useState<Song[]>([])
     const [loading, setLoading] = useState(true)
     const [favorited, setFavorited] = useState(false)
+    const [playlistDialogSong, setPlaylistDialogSong] = useState<Song | null>(null)
 
     const { playTrack, playAlbum, currentTrack, isPlaying, setIsPlaying, shuffle, toggleShuffle, songToTrack, addToQueue, addAlbumToQueue } = usePlayer()
 
@@ -331,6 +333,14 @@ export default function AlbumDetailPage() {
                                         <DropdownMenuItem
                                             onClick={(e) => {
                                                 e.stopPropagation();
+                                                setPlaylistDialogSong(song);
+                                            }}
+                                        >
+                                            Add to Playlist
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem
+                                            onClick={(e) => {
+                                                e.stopPropagation();
                                                 handleSongFavorite(song);
                                             }}
                                         >
@@ -343,6 +353,13 @@ export default function AlbumDetailPage() {
                     ))}
                 </div>
             </div>
+
+            <AddToPlaylistDialog 
+                isOpen={!!playlistDialogSong}
+                onClose={() => setPlaylistDialogSong(null)}
+                songId={playlistDialogSong?.id ?? ""}
+                songTitle={playlistDialogSong?.title}
+            />
         </div>
     );
 }

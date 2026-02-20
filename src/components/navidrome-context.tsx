@@ -39,6 +39,7 @@ interface NavidromeContextType {
     refreshData: () => Promise<void>;
     createPlaylist: (name: string, songIds?: string[]) => Promise<Playlist>;
     updatePlaylist: (playlistId: string, name?: string, comment?: string, songIds?: string[]) => Promise<void>;
+    addToPlaylist: (playlistId: string, songIdToAdd: string) => Promise<void>;
     deletePlaylist: (playlistId: string) => Promise<void>;
     starItem: (id: string, type: 'song' | 'album' | 'artist') => Promise<void>;
     unstarItem: (id: string, type: 'song' | 'album' | 'artist') => Promise<void>;
@@ -346,6 +347,23 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
         }
     };
 
+    const addToPlaylist = async (playlistId: string, songIdToAdd: string) => {
+        if (!api) {
+            setError('Navidrome is not configured. Please go to Settings to configure your Navidrome server.');
+            throw new Error('Navidrome is not configured');
+        }
+
+        setError(null);
+        try {
+            await api.addToPlaylist(playlistId, songIdToAdd);
+            await loadPlaylists(); // Refresh playlists
+        } catch (err) {
+            console.error('Failed to add to playlist:', err);
+            setError('Failed to add to playlist');
+            throw err;
+        }
+    };
+
     const starItem = async (id: string, type: 'song' | 'album' | 'artist') => {
         if (!api) {
             setError('Navidrome is not configured. Please go to Settings to configure your Navidrome server.');
@@ -452,6 +470,7 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
         refreshData,
         createPlaylist,
         updatePlaylist,
+        addToPlaylist,
         deletePlaylist,
         starItem,
         unstarItem,

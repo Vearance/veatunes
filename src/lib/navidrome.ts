@@ -317,6 +317,13 @@ export default class NavidromeAPI {
         await this.makeRequest('updatePlaylist', params);
     }
 
+    async addToPlaylist(playlistId: string, songIdToAdd: string): Promise<void> {
+        await this.makeRequest('updatePlaylist', {
+            playlistId,
+            songIdToAdd
+        });
+    }
+
     async deletePlaylist(playlistId: string): Promise<void> {
         await this.makeRequest('deletePlaylist', { id: playlistId });
     }

@@ -17,6 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { Album, Artist, Song } from "@/lib/navidrome";
 import { formatDuration } from "@/lib/song-utils";
 import { Shuffle, MoreHorizontal } from "lucide-react";
+import { AddToPlaylistDialog } from "@/components/add-to-playlist-dialog";
 
 const selectTopSongs = (list: Song[], limit: number = 10) => {
     if (list.length === 0) return [];
@@ -39,6 +40,7 @@ export default function ArtistDetailPage() {
     const [songs, setSongs] = useState<Song[]>([]);
     const [topSongs, setTopSongs] = useState<Song[]>([]);
     const [favorited, setFavorited] = useState(false);
+    const [playlistDialogSong, setPlaylistDialogSong] = useState<Song | null>(null);
 
     const { songToTrack, playTrack, playAlbum, playArtist, addToQueue, currentTrack, isPlaying, setIsPlaying, shuffle, toggleShuffle } = usePlayer();
 
@@ -363,6 +365,14 @@ export default function ArtistDetailPage() {
                                                 <DropdownMenuItem
                                                     onClick={(e) => {
                                                         e.stopPropagation();
+                                                        setPlaylistDialogSong(song);
+                                                    }}
+                                                >
+                                                    Add to Playlist
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
                                                         handleSongFavorite(song);
                                                     }}
                                                 >
@@ -396,6 +406,13 @@ export default function ArtistDetailPage() {
                     </div>
                 )}
             </div>
+
+            <AddToPlaylistDialog 
+                isOpen={!!playlistDialogSong}
+                onClose={() => setPlaylistDialogSong(null)}
+                songId={playlistDialogSong?.id ?? ""}
+                songTitle={playlistDialogSong?.title}
+            />
         </div>
     );
 }
