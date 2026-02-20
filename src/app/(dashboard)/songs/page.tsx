@@ -326,7 +326,7 @@ export default function SongsPage() {
                                     className={`flex items-center p-2 rounded-lg hover:bg-zinc-800 transition-colors group cursor-pointer ${isCurrentSong ? 'bg-zinc-800/50' : ''}`}
                                 >
                                     {/* index / play indicator */}
-                                    <div className="w-8 text-right text-zinc-500 text-sm group-hover:hidden">
+                                    <div className="w-8 text-right text-zinc-500 text-sm">
                                         {isCurrentSong && isPlaying ? (
                                             <Image
                                                 src="/icons/pause.svg"
@@ -338,14 +338,6 @@ export default function SongsPage() {
                                         ) : (
                                             globalIndex
                                         )}
-                                    </div>
-                                    <div className="w-8 hidden group-hover:flex items-center justify-center">
-                                        <Image
-                                            src="/icons/play.svg"
-                                            alt="Play"
-                                            width={12}
-                                            height={12}
-                                        />
                                     </div>
 
                                     {/* cover art */}
@@ -359,7 +351,7 @@ export default function SongsPage() {
                                     </div>
 
                                     {/* title + artist */}
-                                    <div className="flex-1 min-w-0 ml-3" onClick={(e) => e.stopPropagation()}>
+                                    <div className="flex-1 min-w-0 ml-3">
                                         <p className={`truncate text-sm font-medium ${isCurrentSong ? 'text-white' : 'text-zinc-200'}`}>
                                             {song.title}
                                         </p>
@@ -367,6 +359,7 @@ export default function SongsPage() {
                                             <Link
                                                 href={`/artist/${song.artistId}`}
                                                 className="hover:text-zinc-300 hover:underline"
+                                                onClick={(e) => e.stopPropagation()}
                                             >
                                                 {song.artist}
                                             </Link>
@@ -374,13 +367,11 @@ export default function SongsPage() {
                                     </div>
 
                                     {/* album */}
-                                    <div
-                                        className="w-[140px] text-left hidden md:block"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
+                                    <div className="w-[140px] text-left hidden md:block">
                                         <Link
                                             href={`/album/${song.albumId}`}
                                             className="text-xs text-zinc-500 hover:text-zinc-300 hover:underline truncate block"
+                                            onClick={(e) => e.stopPropagation()}
                                         >
                                             {song.album}
                                         </Link>
