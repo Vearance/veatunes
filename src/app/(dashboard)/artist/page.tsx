@@ -50,10 +50,10 @@ export default function ArtistPage() {
                                     src={coverUrl || "/artistplaceholder.svg"}
                                     alt={`Cover art for ${ artist.name || "Unknown Artist"}`}
                                     fill
-                                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                    className="object-cover transition-transform duration-300 md:group-hover:scale-105"
                                     draggable={false}
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end items-center p-4">
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end items-center p-4">
                                     <p className="text-sm font-medium text-zinc-100 truncate w-full text-center">
                                         {artist.name}
                                     </p>

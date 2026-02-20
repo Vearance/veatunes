@@ -43,16 +43,17 @@ export default function AlbumPage() {
                         <Link
                             key={album.id}
                             href={`/album/${album.id}`}
-                            className="group flex flex-col items-center text-center rounded-lg overflow-hidden p-1">
+                            className="group flex flex-col items-center text-center rounded-lg overflow-hidden p-1"
+                        >
                             <div className="relative w-full aspect-square rounded-md overflow-hidden bg-zinc-800">
                                 <Image
                                     src={coverUrl || "/albumplaceholder.svg"}
                                     alt={`Cover art for ${ album.name || "Unknown Album"}`}
                                     fill
-                                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                                    className="object-cover transition-transform duration-300 md:group-hover:scale-105"
                                     draggable={false}
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end items-center p-4">
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end items-center p-4">
                                     <p className="text-sm font-medium text-zinc-100 truncate w-full text-center">
                                         {album.name}
                                     </p>
