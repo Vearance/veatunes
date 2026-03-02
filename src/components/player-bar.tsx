@@ -13,8 +13,8 @@ export function PlayerBar() {
         audioRef,
         currentTrack,
         // queue,
-        // shuffle,
-        // repeat,
+        shuffle,
+        repeat,
         isPlaying,
         // isLoading,
         // playedTracks,
@@ -31,8 +31,8 @@ export function PlayerBar() {
 
         // playAlbum,
 
-        // toggleShuffle,
-        // toggleRepeat,
+        toggleShuffle,
+        toggleRepeat,
         setIsPlaying,
         seekTo,
         setVolume,
@@ -141,7 +141,8 @@ export function PlayerBar() {
                             <Button
                                 asChild
                                 variant="ghost"
-                                className="h-6 w-6 p-0 hover:bg-transparent cursor-pointer select-none"
+                                onClick={toggleShuffle}
+                                className={`h-6 w-6 p-0 hover:bg-transparent cursor-pointer select-none ${shuffle ? 'opacity-100' : 'opacity-40'}`}
                             >
                                 <Image
                                     src="/icons/shuffle.svg"
@@ -208,15 +209,21 @@ export function PlayerBar() {
                             <Button
                                 asChild
                                 variant="ghost"
-                                className="h-6 w-6 p-0 hover:bg-transparent cursor-pointer select-none"
+                                onClick={toggleRepeat}
+                                className={`h-6 w-6 p-0 hover:bg-transparent cursor-pointer select-none relative ${repeat !== 'off' ? 'opacity-100' : 'opacity-40'}`}
                             >
-                                <Image
-                                    src="/icons/repeat.svg"
-                                    alt="Repeat"
-                                    width={40}
-                                    height={40}
-                                    draggable={false}
-                                />
+                                <div className="relative">
+                                    <Image
+                                        src="/icons/repeat.svg"
+                                        alt={repeat === 'one' ? 'Repeat One' : repeat === 'all' ? 'Repeat All' : 'Repeat'}
+                                        width={40}
+                                        height={40}
+                                        draggable={false}
+                                    />
+                                    {repeat === 'one' && (
+                                        <span className="absolute -top-1 -right-1 text-[9px] font-bold text-white">1</span>
+                                    )}
+                                </div>
                             </Button>
                         </div>
                     </div>
