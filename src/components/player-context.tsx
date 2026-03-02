@@ -4,6 +4,15 @@ import { createContext, useContext, useState, useEffect, useCallback, useMemo, u
 import { useNavidrome } from "@/components/navidrome-context";
 import { Song } from "@/lib/navidrome";
 
+function fisherYatesShuffle<T>(array: T[]): T[] {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
 export interface Track {
     id: string;
     name: string;
@@ -291,7 +300,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
                     (t) => t.id !== currentTrack.id
                 );
                 const shuffled = newShuffle
-                    ? remaining.sort(() => Math.random() - 0.5)
+                    ? fisherYatesShuffle(remaining)
                     : remaining; // could re-sort to original if you store that
 
                 return [currentTrack, ...shuffled];
@@ -387,7 +396,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
                 const tracks = songs.map(songToTrack);
 
                 const shuffled = shuffle
-                    ? [...tracks].sort(() => Math.random() - 0.5)
+                    ? fisherYatesShuffle(tracks)
                     : tracks;
 
                 const firstTrack = shuffled[0];
@@ -403,13 +412,29 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
     );
 
     // all artist's songs loaded on the page
-    const playArtist = (songs: Song[]) => {
+    const playArtist = useCallback((songs: Song[]) => {
         if (!songs.length) return;
         const tracks = songs.map(songToTrack);
-        playTrack(tracks[0]);
-        tracks.slice(1).forEach(addToQueue);
-    };
+        const ordered = shuffle ? fisherYatesShuffle(tracks) : tracks;
+        const firstTrack = ordered[0];
+        setQueue(ordered);
+        setPlayedTracks([]);
+        playTrack(firstTrack, true, true);
+    }, [shuffle, songToTrack, playTrack]);
 
+
+    // global spacebar play/pause
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key !== " ") return;
+            const tag = (e.target as HTMLElement)?.tagName;
+            if (tag === "INPUT" || tag === "TEXTAREA" || (e.target as HTMLElement)?.isContentEditable) return;
+            e.preventDefault();
+            setIsPlaying((prev) => !prev);
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, []);
 
     // when currentTrack changes, load its URL into audio
     useEffect(() => {
