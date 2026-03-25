@@ -71,6 +71,7 @@ export interface Song {
     artistId: string;
     type: string;
     starred?: string;
+    artists?: { id: string; name: string }[];
 }
 
 export interface Playlist {

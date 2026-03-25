@@ -25,6 +25,7 @@ export interface Track {
     artistId: string;
     autoPlay?: boolean;
     starred?: boolean;
+    artists?: { id: string; name: string }[];
 }
 
 interface PlayerContextProps {
@@ -107,6 +108,7 @@ export const PlayerProvider: React.FC<{ children: React.ReactNode }> = ({
                 albumId: song.albumId,
                 artistId: song.artistId,
                 starred: !!song.starred,
+                artists: song.artists,
             };
         },
         [api]

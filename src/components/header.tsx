@@ -1,11 +1,11 @@
 "use client"
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from 'next/navigation';
 import { Input } from "@/components/ui/input";
-import { Search, Settings, ChartNoAxesColumn, UserRound } from "lucide-react";
+import { Search, Settings, ChartNoAxesColumn, UserRound, X } from "lucide-react";
 import { useNavidrome } from '@/components/navidrome-context';
 import { usePlayer } from '@/components/player-context';
 import { useUI } from '@/components/ui-context';
@@ -45,7 +45,9 @@ export default function Header() {
     const [searchResults, setSearchResults] = useState<{ artists: Artist[]; albums: Album[]; songs: Song[] } | null>(null);
     const [isSearching, setIsSearching] = useState(false);
     const [showResults, setShowResults] = useState(false);
+    const [activeIndex, setActiveIndex] = useState(-1);
     const searchRef = useRef<HTMLDivElement>(null);
+    const resultsRef = useRef<HTMLDivElement>(null);
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
@@ -68,9 +70,25 @@ export default function Header() {
         fetchUserInfo();
     }, [api, isConnected]);
 
+    // build a flat list of all result items for keyboard navigation
+    type ResultItem =
+        | { type: 'artist'; data: Artist }
+        | { type: 'album'; data: Album }
+        | { type: 'song'; data: Song };
+
+    const flatResults: ResultItem[] = useMemo(() => {
+        if (!searchResults) return [];
+        const items: ResultItem[] = [];
+        searchResults.artists.forEach(a => items.push({ type: 'artist', data: a }));
+        searchResults.albums.forEach(a => items.push({ type: 'album', data: a }));
+        searchResults.songs.forEach(s => items.push({ type: 'song', data: s }));
+        return items;
+    }, [searchResults]);
+
     // debounced search
     const handleSearchChange = useCallback((value: string) => {
         setSearchQuery(value);
+        setActiveIndex(-1);
 
         if (debounceRef.current) clearTimeout(debounceRef.current);
 
@@ -87,6 +105,7 @@ export default function Header() {
                 const results = await api.search(value, 5, 5, 5);
                 setSearchResults(results);
                 setShowResults(true);
+                setActiveIndex(-1);
             } catch (error) {
                 console.error('Search failed:', error);
             } finally {
@@ -94,6 +113,13 @@ export default function Header() {
             }
         }, 300);
     }, [api]);
+
+    const clearSearch = useCallback(() => {
+        setSearchQuery("");
+        setSearchResults(null);
+        setShowResults(false);
+        setActiveIndex(-1);
+    }, []);
 
     // close on outside click
     useEffect(() => {
@@ -106,11 +132,47 @@ export default function Header() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // close on Escape
+    // keyboard navigation for search results
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Escape') {
             setShowResults(false);
+            setActiveIndex(-1);
             (e.target as HTMLInputElement).blur();
+            return;
+        }
+
+        if (!showResults || flatResults.length === 0) return;
+
+        if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            setActiveIndex(prev => {
+                const next = prev < flatResults.length - 1 ? prev + 1 : 0;
+                // scroll active item into view
+                setTimeout(() => {
+                    resultsRef.current?.querySelector(`[data-result-index="${next}"]`)?.scrollIntoView({ block: 'nearest' });
+                }, 0);
+                return next;
+            });
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            setActiveIndex(prev => {
+                const next = prev > 0 ? prev - 1 : flatResults.length - 1;
+                setTimeout(() => {
+                    resultsRef.current?.querySelector(`[data-result-index="${next}"]`)?.scrollIntoView({ block: 'nearest' });
+                }, 0);
+                return next;
+            });
+        } else if (e.key === 'Enter' && activeIndex >= 0) {
+            e.preventDefault();
+            const item = flatResults[activeIndex];
+            if (item.type === 'artist') {
+                closeAndNavigate(`/artist/${item.data.id}`);
+            } else if (item.type === 'album') {
+                closeAndNavigate(`/album/${item.data.id}`);
+            } else {
+                handlePlaySong(item.data as Song);
+            }
+            setActiveIndex(-1);
         }
     };
 
@@ -181,20 +243,31 @@ export default function Header() {
                     <Search
                         className="text-secondary shrink-0 mr-1 hidden md:block"
                         size={24} />
-                    <Input
-                        type="text"
-                        placeholder="Search..."
-                        value={searchQuery}
-                        onChange={(e) => handleSearchChange(e.target.value)}
-                        onFocus={() => { if (searchResults) setShowResults(true); }}
-                        onKeyDown={handleKeyDown}
-                        className="bg-input text-zinc-300 placeholder-zinc-500 font-satoshi rounded-sm border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm md:text-base"
-                    />
+                    <div className="relative flex-1">
+                        <Input
+                            type="text"
+                            placeholder="Search..."
+                            value={searchQuery}
+                            onChange={(e) => handleSearchChange(e.target.value)}
+                            onFocus={() => { if (searchResults) setShowResults(true); }}
+                            onKeyDown={handleKeyDown}
+                            className="bg-input text-zinc-300 placeholder-zinc-500 font-satoshi rounded-sm border-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm md:text-base pr-8"
+                        />
+                        {searchQuery && (
+                            <button
+                                onClick={clearSearch}
+                                className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+                                aria-label="Clear search"
+                            >
+                                <X size={16} />
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 {/* search results dropdown */}
                 {showResults && searchQuery.trim() && (
-                    <div className="absolute top-full left-0 right-0 mt-2 bg-foreground border border-zinc-700 rounded-lg shadow-2xl z-50 overflow-hidden max-h-[420px] overflow-y-auto custom-scrollbar w-full md:w-[370px]">
+                    <div ref={resultsRef} className="absolute top-full left-0 right-0 mt-2 bg-foreground border border-zinc-700 rounded-lg shadow-2xl z-50 overflow-hidden max-h-[420px] overflow-y-auto custom-scrollbar w-full md:w-[370px]">
                         {isSearching ? (
                             <p className="text-zinc-500 text-sm p-4 text-center">Searching…</p>
                         ) : !hasResults ? (
@@ -208,8 +281,9 @@ export default function Header() {
                                         {searchResults!.artists.map((artist) => (
                                             <button
                                                 key={artist.id}
+                                                data-result-index={flatResults.findIndex(r => r.type === 'artist' && r.data.id === artist.id)}
                                                 onClick={() => closeAndNavigate(`/artist/${artist.id}`)}
-                                                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-zinc-800 transition-colors cursor-pointer"
+                                                className={`w-full flex items-center gap-3 px-3 py-2 hover:bg-zinc-800 transition-colors cursor-pointer ${flatResults.findIndex(r => r.type === 'artist' && r.data.id === artist.id) === activeIndex ? 'bg-zinc-800' : ''}`}
                                             >
                                                 <div className="relative w-8 h-8 rounded-full overflow-hidden bg-zinc-800 flex-shrink-0">
                                                     <Image
@@ -235,8 +309,9 @@ export default function Header() {
                                         {searchResults!.albums.map((album) => (
                                             <button
                                                 key={album.id}
+                                                data-result-index={flatResults.findIndex(r => r.type === 'album' && r.data.id === album.id)}
                                                 onClick={() => closeAndNavigate(`/album/${album.id}`)}
-                                                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-zinc-800 transition-colors cursor-pointer"
+                                                className={`w-full flex items-center gap-3 px-3 py-2 hover:bg-zinc-800 transition-colors cursor-pointer ${flatResults.findIndex(r => r.type === 'album' && r.data.id === album.id) === activeIndex ? 'bg-zinc-800' : ''}`}
                                             >
                                                 <div className="relative w-8 h-8 rounded overflow-hidden bg-zinc-800 flex-shrink-0">
                                                     <Image
@@ -262,8 +337,9 @@ export default function Header() {
                                         {searchResults!.songs.map((song) => (
                                             <button
                                                 key={song.id}
+                                                data-result-index={flatResults.findIndex(r => r.type === 'song' && r.data.id === song.id)}
                                                 onClick={() => handlePlaySong(song)}
-                                                className="w-full flex items-center gap-3 px-3 py-2 hover:bg-zinc-800 transition-colors cursor-pointer"
+                                                className={`w-full flex items-center gap-3 px-3 py-2 hover:bg-zinc-800 transition-colors cursor-pointer ${flatResults.findIndex(r => r.type === 'song' && r.data.id === song.id) === activeIndex ? 'bg-zinc-800' : ''}`}
                                             >
                                                 <div className="relative w-8 h-8 rounded overflow-hidden bg-zinc-800 flex-shrink-0">
                                                     <Image

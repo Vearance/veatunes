@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { usePlayer } from '@/components/player-context';
 import { useUI } from '@/components/ui-context';
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { formatDuration } from "@/lib/song-utils";
@@ -130,7 +131,26 @@ export function PlayerBar() {
                             {currentTrack?.name ?? "No track playing"}
                         </p>
                         <p className="text-sm text-zinc-300 truncate m-0">
-                            {currentTrack?.artist ?? ""}
+                            {currentTrack?.artists && currentTrack.artists.length > 0
+                                ? currentTrack.artists.map((a, i) => (
+                                    <span key={a.id}>
+                                        <Link
+                                            href={`/artist/${a.id}`}
+                                            className="hover:underline hover:text-white transition-colors"
+                                        >
+                                            {a.name}
+                                        </Link>
+                                        {i < currentTrack.artists!.length - 1 && ", "}
+                                    </span>
+                                ))
+                                : currentTrack?.artist
+                                    ? <Link
+                                        href={`/artist/${currentTrack.artistId}`}
+                                        className="hover:underline hover:text-white transition-colors"
+                                    >
+                                        {currentTrack.artist}
+                                    </Link>
+                                    : ""}
                         </p>
                     </div>
                 </div>
@@ -332,7 +352,26 @@ export function PlayerBar() {
                             {currentTrack?.name ?? "No track playing"}
                         </p>
                         <p className="text-xs text-zinc-400 truncate">
-                            {currentTrack?.artist ?? ""}
+                            {currentTrack?.artists && currentTrack.artists.length > 0
+                                ? currentTrack.artists.map((a, i) => (
+                                    <span key={a.id}>
+                                        <Link
+                                            href={`/artist/${a.id}`}
+                                            className="hover:underline hover:text-white transition-colors"
+                                        >
+                                            {a.name}
+                                        </Link>
+                                        {i < currentTrack.artists!.length - 1 && ", "}
+                                    </span>
+                                ))
+                                : currentTrack?.artist
+                                    ? <Link
+                                        href={`/artist/${currentTrack.artistId}`}
+                                        className="hover:underline hover:text-white transition-colors"
+                                    >
+                                        {currentTrack.artist}
+                                    </Link>
+                                    : ""}
                         </p>
                     </div>
                     {/* controls */}
