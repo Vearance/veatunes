@@ -49,6 +49,5 @@ jobs:
           script: |
             cd ${{ secrets.DEPLOY_PATH || '~/veatunes' }}
             git pull
-            docker compose down
-            docker system prune -a --volumes -f
-            docker compose up -d --build
+            docker compose build
+            docker compose up -d
