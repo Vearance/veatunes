@@ -33,6 +33,7 @@ const nextConfig: NextConfig = {
     ],
     unoptimized: true,
   },
+  turbopack: {},
 };
 
 import withSerwistInit from "@serwist/next";
