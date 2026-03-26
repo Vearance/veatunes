@@ -51,23 +51,26 @@ export default function Header() {
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
+        let isMounted = true;
+
         const fetchUserInfo = async () => {
             if (!api || !isConnected) {
-                setLoading(false);
+                if (isMounted) setLoading(false);
                 return;
             }
 
             try {
                 const user = await api.getUserInfo();
-                setUserInfo(user);
+                if (isMounted) setUserInfo(user);
             } catch (error) {
                 console.error('Failed to fetch user info:', error);
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         };
 
         fetchUserInfo();
+        return () => { isMounted = false; };
     }, [api, isConnected]);
 
     // build a flat list of all result items for keyboard navigation
@@ -119,6 +122,13 @@ export default function Header() {
         setSearchResults(null);
         setShowResults(false);
         setActiveIndex(-1);
+    }, []);
+
+    // clear pending debounce on unmount to avoid state updates after unmount
+    useEffect(() => {
+        return () => {
+            if (debounceRef.current) clearTimeout(debounceRef.current);
+        };
     }, []);
 
     // close on outside click

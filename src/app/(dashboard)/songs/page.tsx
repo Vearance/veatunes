@@ -53,7 +53,7 @@ export default function SongsPage() {
     const [playlistDialogSong, setPlaylistDialogSong] = useState<Song | null>(null);
 
     // fetch all songs with batched API calls
-    const fetchAllSongs = useCallback(async () => {
+    const fetchAllSongs = useCallback(async (signal: { cancelled: boolean }) => {
         if (!api) return;
         setLoading(true);
 
@@ -64,6 +64,7 @@ export default function SongsPage() {
             let hasMore = true;
 
             while (hasMore) {
+                if (signal.cancelled) return;
                 const batch = await api.getAllSongs(batchSize, offset);
                 allSongs = [...allSongs, ...batch];
                 if (batch.length < batchSize) {
@@ -72,17 +73,19 @@ export default function SongsPage() {
                 offset += batchSize;
             }
 
-            setSongs(allSongs);
+            if (!signal.cancelled) setSongs(allSongs);
         } catch (error) {
             console.error("Failed to fetch songs:", error);
         } finally {
-            setLoading(false);
+            if (!signal.cancelled) setLoading(false);
         }
     }, [api]);
 
     useEffect(() => {
         if (!isConnected || !api) return;
-        fetchAllSongs();
+        const signal = { cancelled: false };
+        fetchAllSongs(signal);
+        return () => { signal.cancelled = true; };
     }, [isConnected, api, fetchAllSongs]);
 
     // sort songs

@@ -46,19 +46,23 @@ export default function AlbumDetailPage() {
     useEffect(() => {
         if (!isConnected || !id) return
 
+        let isMounted = true
+
         const fetchAlbum = async () => {
             try {
                 const { album: albumInfo, songs: albumSongs } = await getAlbum(id)
+                if (!isMounted) return
                 setAlbum(albumInfo)
                 setSongs(albumSongs)
             } catch (error) {
                 console.error("Failed to fetch album:", error)
             } finally {
-                setLoading(false)
+                if (isMounted) setLoading(false)
             }
         }
 
         fetchAlbum()
+        return () => { isMounted = false }
     }, [getAlbum, isConnected, id])
 
     const handleAlbumFavorite = async () => {

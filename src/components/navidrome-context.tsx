@@ -410,29 +410,37 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
     };
 
     useEffect(() => {
+        let isMounted = true;
+
         const initialize = async () => {
             if (!api) {
-                setIsConnected(false);
-                setError('Navidrome is not configured. Please go to Settings to configure your Navidrome server.');
+                if (isMounted) {
+                    setIsConnected(false);
+                    setError('Navidrome is not configured. Please go to Settings to configure your Navidrome server.');
+                }
                 return;
             }
 
             try {
                 const connected = await api.ping();
+                if (!isMounted) return;
                 setIsConnected(connected);
                 if (connected) {
                     await refreshData();
                 } else {
-                    setError('Failed to connect to Navidrome server');
+                    if (isMounted) setError('Failed to connect to Navidrome server');
                 }
             } catch (err) {
                 console.error('Failed to initialize Navidrome:', err);
-                setError('Failed to initialize Navidrome connection');
-                setIsConnected(false);
+                if (isMounted) {
+                    setError('Failed to initialize Navidrome connection');
+                    setIsConnected(false);
+                }
             }
         };
 
         initialize();
+        return () => { isMounted = false; };
     }, [api, refreshData]);
 
     const value: NavidromeContextType = {
