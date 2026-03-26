@@ -30,19 +30,22 @@ export default function MoodsPage() {
     useEffect(() => {
         if (!api || !isConnected || moodsFolderId === null) return
 
+        let isMounted = true
+
         const loadMoodsSongs = async () => {
             setLoading(true)
             try {
                 const moodsSongs = await api.getAllSongs(500, 0, moodsFolderId)
-                setSongs(moodsSongs)
+                if (isMounted) setSongs(moodsSongs)
             } catch (err) {
                 console.error("Failed to load moods songs:", err)
             } finally {
-                setLoading(false)
+                if (isMounted) setLoading(false)
             }
         }
 
         loadMoodsSongs()
+        return () => { isMounted = false }
     }, [api, isConnected, moodsFolderId])
 
     // no moods folder found

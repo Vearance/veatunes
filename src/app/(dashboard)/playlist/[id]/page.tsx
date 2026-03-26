@@ -60,19 +60,23 @@ export default function PlaylistDetailPage() {
     useEffect(() => {
         if (!isConnected || !id) return;
 
+        let isMounted = true;
+
         const fetchPlaylist = async () => {
             try {
                 const { playlist: pl, songs: plSongs } = await getPlaylist(id);
+                if (!isMounted) return;
                 setPlaylist(pl);
                 setSongs(plSongs);
             } catch (error) {
                 console.error("Failed to fetch playlist:", error);
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         };
 
         fetchPlaylist();
+        return () => { isMounted = false; };
     }, [getPlaylist, isConnected, id]);
 
     const handleSongFavorite = async (song: Song) => {

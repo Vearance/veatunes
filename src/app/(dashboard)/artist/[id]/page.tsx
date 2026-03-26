@@ -55,9 +55,12 @@ export default function ArtistDetailPage() {
     useEffect(() => {
         if (!isConnected || !id) return;
 
+        let isMounted = true;
+
         const fetchArtist = async () => {
             try {
                 const { artist: artistData, albums: artistAlbums } = await getArtist(id);
+                if (!isMounted) return;
 
                 setArtist(artistData);
                 setFavorited(Boolean(artistData.starred));
@@ -76,10 +79,12 @@ export default function ArtistDetailPage() {
                     combinedSongs = albumSongs.flat();
                 }
 
+                if (!isMounted) return;
                 setSongs(combinedSongs);
 
                 try {
                     const apiTopSongs = await getArtistTopSongs(artistData.name, 10);
+                    if (!isMounted) return;
                     if (apiTopSongs.length > 0) {
                         setTopSongs(apiTopSongs);
                     } else {
@@ -87,18 +92,21 @@ export default function ArtistDetailPage() {
                     }
                 } catch (topSongsError) {
                     console.error("Failed to fetch top songs:", topSongsError);
-                    setTopSongs(selectTopSongs(combinedSongs));
+                    if (isMounted) setTopSongs(selectTopSongs(combinedSongs));
                 }
             } catch (error) {
                 console.error("Failed to fetch artist:", error);
-                setSongs([]);
-                setTopSongs([]);
+                if (isMounted) {
+                    setSongs([]);
+                    setTopSongs([]);
+                }
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         };
 
         fetchArtist();
+        return () => { isMounted = false; };
     }, [getAlbum, getArtist, getArtistTopSongs, id, isConnected]);
 
     const handleArtistFavorite = async () => {
