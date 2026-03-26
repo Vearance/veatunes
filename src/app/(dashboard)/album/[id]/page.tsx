@@ -273,7 +273,7 @@ export default function AlbumDetailPage() {
                                 });
                             }}>
                             <div className="flex items-center gap-3 min-w-0">
-                                <span className="text-zinc-500 text-sm w-6 text-right">
+                                <span className="text-zinc-500 text-sm w-8 ml-1 text-right shrink-0">
                                     {song.track ?? 0}
                                 </span>
                                 <span className="text-zinc-200 truncate">

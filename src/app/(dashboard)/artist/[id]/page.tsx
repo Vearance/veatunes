@@ -13,7 +13,7 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { Separator } from "@/components/ui/separator";
+
 import { Album, Artist, Song } from "@/lib/navidrome";
 import { formatDuration } from "@/lib/song-utils";
 import { Shuffle, MoreHorizontal } from "lucide-react";
@@ -165,7 +165,7 @@ export default function ArtistDetailPage() {
     if (!artist) return <p className="text-zinc-400 p-4">Artist not found.</p>;
 
     return (
-        <div className="p-2 md:p-4 space-y-4 md:space-y-6">
+        <div className="p-2 md:p-4 space-y-6 md:space-y-8">
             <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 md:gap-6">
                 <div className="relative w-[140px] h-[140px] md:w-[170px] md:h-[170px] rounded-lg overflow-hidden bg-zinc-800 shrink-0">
                     <Image
@@ -176,12 +176,12 @@ export default function ArtistDetailPage() {
                     />
                 </div>
 
-                <div className="flex flex-col sm:justify-between sm:h-[170px] items-center sm:items-start text-center sm:text-left">
+                <div className="flex flex-col sm:justify-end sm:h-[170px] items-center sm:items-start text-center sm:text-left">
                     <div>
-                        <h1 className="text-xl md:text-2xl font-semibold text-zinc-100">
+                        <h1 className="text-5xl md:text-6xl font-extrabold text-zinc-100 tracking-wide">
                             {artist.name}
                         </h1>
-                        <p className="text-sm text-zinc-500 mt-1">
+                        <p className="text-sm text-zinc-500 mt-2">
                             {artist.albumCount} albums • {songs.length} songs
                         </p>
                     </div>
@@ -222,31 +222,6 @@ export default function ArtistDetailPage() {
                             />
                         </Button>
 
-                        <Button
-                            asChild
-                            variant="ghost"
-                            onClick={handleArtistFavorite}
-                            className="hover:opacity-100 transition hover:bg-transparent cursor-pointer select-none p-0">
-                            {favorited ? (
-                                <Image
-                                    src="/icons/heartfilled.svg"
-                                    alt="Heart"
-                                    width={24}
-                                    height={24}
-                                    draggable={false}
-                                />
-                            ) : (
-                                <Image
-                                    src="/icons/heart.svg"
-                                    alt="Heart"
-                                    width={24}
-                                    height={24}
-                                    draggable={false}
-                                    className="opacity-80"
-                                />
-                            )}
-                        </Button>
-
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
@@ -267,6 +242,11 @@ export default function ArtistDetailPage() {
                                 >
                                     Add All to Queue
                                 </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onClick={handleArtistFavorite}
+                                >
+                                    {favorited ? "Remove from Favorites" : "Add to Favorites"}
+                                </DropdownMenuItem>
                                 <DropdownMenuItem>
                                     Share Artist
                                 </DropdownMenuItem>
@@ -278,10 +258,9 @@ export default function ArtistDetailPage() {
             </div>
 
             <div>
-                <h2 className="text-lg font-medium text-zinc-200 mb-4 px-2">
+                <h2 className="text-xl font-bold text-zinc-100 mb-3 px-2">
                     Top Songs
                 </h2>
-                <Separator className="my-2 h-[2px] bg-border/75" />
 
                 {topSongs.length === 0 ? (
                     <p className="text-zinc-400 px-2">
@@ -289,14 +268,6 @@ export default function ArtistDetailPage() {
                     </p>
                 ) : (
                     <div>
-                        <div className="flex items-center justify-between text-sm text-zinc-500 mb-2 px-2">
-                            <span className="w-6 text-right">#</span>
-                            <span className="flex-1 ml-3">Title</span>
-                            <span className="text-right mr-12">Duration</span>
-                        </div>
-
-                        <Separator className="my-1.5 h-[2px] bg-border/75" />
-
                         <div>
                             {topSongs.map((song, index) => (
                                 <div
@@ -307,7 +278,7 @@ export default function ArtistDetailPage() {
                                         playTrack(track);
                                     }}>
                                     <div className="flex items-center gap-3 min-w-0">
-                                        <span className="text-zinc-500 text-sm w-6 text-right">
+                                        <span className="text-zinc-500 text-sm w-8 ml-1 text-right shrink-0">
                                             {index + 1}
                                         </span>
                                         <div className="min-w-0">
@@ -320,15 +291,11 @@ export default function ArtistDetailPage() {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-3 text-sm text-zinc-400">
-                                        <span className="text-right">
-                                            {formatDuration(song.duration)}
-                                        </span>
-
+                                    <div className="flex items-center gap-4 text-sm text-zinc-400">
                                         <Button
                                             asChild
                                             variant="ghost"
-                                            className="hover:opacity-100 transition hover:bg-transparent cursor-pointer ml-4 p-0"
+                                            className="hover:opacity-100 transition hover:bg-transparent cursor-pointer p-0 mr-4"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 handleSongFavorite(song);
@@ -351,15 +318,19 @@ export default function ArtistDetailPage() {
                                             )}
                                         </Button>
 
+                                        <span className="text-right min-w-[3.5ch]">
+                                            {formatDuration(song.duration)}
+                                        </span>
+
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="w-6 h-6 p-0 hover:bg-transparent opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                                                    className="w-7 h-7 p-0 ml-2 hover:bg-transparent opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                                                     onClick={(e) => e.stopPropagation()}
                                                 >
-                                                    <MoreHorizontal className="w-4 h-4 text-zinc-400" />
+                                                    <MoreHorizontal className="w-5 h-5 text-zinc-200" />
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent>
@@ -399,10 +370,9 @@ export default function ArtistDetailPage() {
             </div>
 
             <div>
-                <h2 className="text-lg font-medium text-zinc-200 mb-4 px-2">
+                <h2 className="text-xl font-bold text-zinc-100 mb-3 px-2">
                     Albums
                 </h2>
-                <Separator className="my-2 h-[2px] bg-border/75" />
 
                 {albums.length === 0 ? (
                     <p className="text-zinc-400 px-2">
