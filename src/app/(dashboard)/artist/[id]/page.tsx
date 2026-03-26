@@ -272,7 +272,7 @@ export default function ArtistDetailPage() {
                             {topSongs.map((song, index) => (
                                 <div
                                     key={song.id}
-                                    className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-800 transition-colors group cursor-pointer"
+                                    className="flex items-center justify-between p-2 rounded-lg hover:bg-zinc-800 has-[button[data-state=open]]:bg-zinc-800 transition-colors group cursor-pointer"
                                     onClick={() => {
                                         const track = songToTrack(song);
                                         playTrack(track);
@@ -327,7 +327,7 @@ export default function ArtistDetailPage() {
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="w-7 h-7 p-0 ml-2 hover:bg-transparent opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                                                    className="w-7 h-7 p-0 ml-2 hover:bg-transparent opacity-0 group-hover:opacity-100 data-[state=open]:opacity-100 transition-opacity cursor-pointer"
                                                     onClick={(e) => e.stopPropagation()}
                                                 >
                                                     <MoreHorizontal className="w-5 h-5 text-zinc-200" />
