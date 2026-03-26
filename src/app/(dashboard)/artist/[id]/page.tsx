@@ -83,13 +83,15 @@ export default function ArtistDetailPage() {
                 setSongs(combinedSongs);
 
                 try {
-                    const apiTopSongs = await getArtistTopSongs(artistData.name, 10);
+                    const apiTopSongs = await getArtistTopSongs(artistData.name, 50);
                     if (!isMounted) return;
-                    if (apiTopSongs.length > 0) {
-                        setTopSongs(apiTopSongs);
-                    } else {
-                        setTopSongs(selectTopSongs(combinedSongs));
-                    }
+
+                    const mergedSongsMap = new Map<string, Song>();
+                    combinedSongs.forEach(song => mergedSongsMap.set(song.id, song));
+                    apiTopSongs.forEach(song => mergedSongsMap.set(song.id, song));
+
+                    const mergedSongs = Array.from(mergedSongsMap.values());
+                    setTopSongs(selectTopSongs(mergedSongs, 10));
                 } catch (topSongsError) {
                     console.error("Failed to fetch top songs:", topSongsError);
                     if (isMounted) setTopSongs(selectTopSongs(combinedSongs));
