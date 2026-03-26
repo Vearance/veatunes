@@ -27,7 +27,7 @@ ENV NEXT_PUBLIC_NAVIDROME_PASSWORD=${NEXT_PUBLIC_NAVIDROME_PASSWORD}
 RUN bun run build
 
 # ---- Runner ----
-FROM oven/bun:1-slim AS runner
+FROM node:22-slim AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -49,4 +49,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 
-CMD ["bun", "server.js"]
+CMD ["node", "server.js"]
