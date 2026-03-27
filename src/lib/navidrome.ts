@@ -486,6 +486,25 @@ export default class NavidromeAPI {
             return [];
         }
     }
+
+    async changePassword(newPassword: string): Promise<void> {
+        await this.makeRequest('changePassword', {
+            username: this.config.username,
+            password: newPassword
+        });
+    }
+
+    async startScan(fullScan: boolean = false): Promise<void> {
+        const params: Record<string, string | number> = {};
+        if (fullScan) params.fullScan = 'true';
+        await this.makeRequest('startScan', params);
+    }
+
+    async getScanStatus(): Promise<{ scanning: boolean; count?: number }> {
+        const response = await this.makeRequest('getScanStatus');
+        const scanStatus = response.scanStatus as { scanning: boolean; count?: number };
+        return scanStatus;
+    }
 }
 
 // Singleton instance management

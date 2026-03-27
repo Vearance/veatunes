@@ -257,7 +257,7 @@ export default function AlbumDetailPage() {
                     {songs.map((song) => (
                         <div
                             key={song.id}
-                            className="flex items-center cursor-pointer justify-between p-2 rounded-lg hover:bg-zinc-800 transition-colors group"
+                            className="flex items-center cursor-pointer justify-between p-2 rounded-lg hover:bg-zinc-800 has-[button[data-state=open]]:bg-zinc-800 transition-colors group"
                             onClick={() => {
                                 if (!api) return;
                                 playTrack({
@@ -273,7 +273,7 @@ export default function AlbumDetailPage() {
                                 });
                             }}>
                             <div className="flex items-center gap-3 min-w-0">
-                                <span className="text-zinc-500 text-sm w-6 text-right">
+                                <span className="text-zinc-500 text-sm w-8 ml-1 text-right shrink-0">
                                     {song.track ?? 0}
                                 </span>
                                 <span className="text-zinc-200 truncate">
@@ -318,7 +318,7 @@ export default function AlbumDetailPage() {
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            className="w-6 h-6 p-0 hover:bg-transparent opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                                            className="w-6 h-6 p-0 hover:bg-transparent opacity-0 group-hover:opacity-100 data-[state=open]:opacity-100 transition-opacity cursor-pointer"
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             <MoreHorizontal className="w-4 h-4 text-zinc-400" />

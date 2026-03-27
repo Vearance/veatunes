@@ -329,7 +329,7 @@ export default function SongsPage() {
                                         const track = songToTrack(song);
                                         playTrack(track);
                                     }}
-                                    className={`flex items-center p-2 rounded-lg hover:bg-zinc-800 transition-colors group cursor-pointer ${isCurrentSong ? 'bg-zinc-800/50' : ''}`}
+                                    className={`flex items-center p-2 rounded-lg hover:bg-zinc-800 has-[button[data-state=open]]:bg-zinc-800 transition-colors group cursor-pointer ${isCurrentSong ? 'bg-zinc-800/50' : ''}`}
                                 >
                                     {/* index / play indicator */}
                                     <div className="w-8 text-right text-zinc-500 text-sm">
@@ -390,7 +390,7 @@ export default function SongsPage() {
 
                                     {/* actions */}
                                     <div
-                                        className="hidden sm:flex gap-1 ml-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        className="hidden sm:flex gap-1 ml-2 opacity-0 group-hover:opacity-100 has-[button[data-state=open]]:opacity-100 transition-opacity"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         <Button
