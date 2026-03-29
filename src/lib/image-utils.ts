@@ -1,4 +1,13 @@
-import ColorThief from "colorthief";
+// colorthief ships Node.js types (standalone functions), but the browser bundle exports a class constructor. Declare the browser interface here.
+interface ColorThiefInstance {
+    getColor(img: HTMLImageElement, quality?: number): [number, number, number];
+    getPalette(img: HTMLImageElement, colorCount?: number, quality?: number): [number, number, number][];
+}
+interface ColorThiefConstructor {
+    new (): ColorThiefInstance;
+}
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const ColorThief = (await import("colorthief")).default as unknown as ColorThiefConstructor;
 
 /**
  * Extracts the dominant color from an image URL or HTMLImageElement.
