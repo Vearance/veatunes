@@ -222,6 +222,26 @@ export default function ArtistDetailPage() {
                             />
                         </Button>
 
+                        <Button
+                            asChild
+                            variant="ghost"
+                            onClick={() => {
+                                songs.forEach(song => {
+                                    const track = songToTrack(song);
+                                    addToQueue(track);
+                                });
+                            }}
+                            className="hover:bg-transparent hover:opacity-100 transition cursor-pointer p-0">
+                            <Image
+                                src="/icons/addtoqueue.svg"
+                                alt="Add Queue"
+                                width={22}
+                                height={22}
+                                draggable={false}
+                                className="opacity-80"
+                            />
+                        </Button>
+
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
@@ -232,16 +252,6 @@ export default function ArtistDetailPage() {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
-                                <DropdownMenuItem
-                                    onClick={() => {
-                                        songs.forEach(song => {
-                                            const track = songToTrack(song);
-                                            addToQueue(track);
-                                        });
-                                    }}
-                                >
-                                    Add All to Queue
-                                </DropdownMenuItem>
                                 <DropdownMenuItem
                                     onClick={handleArtistFavorite}
                                 >
