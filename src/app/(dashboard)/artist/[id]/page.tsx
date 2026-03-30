@@ -178,7 +178,7 @@ export default function ArtistDetailPage() {
 
                 <div className="flex flex-col sm:justify-end sm:h-[170px] items-center sm:items-start text-center sm:text-left">
                     <div>
-                        <h1 className="text-5xl md:text-6xl font-extrabold text-zinc-100 tracking-wide">
+                        <h1 className="text-xl md:text-6xl font-semibold md:font-extrabold text-zinc-100 md:tracking-wide">
                             {artist.name}
                         </h1>
                         <p className="text-sm text-zinc-500 mt-2">
@@ -222,6 +222,26 @@ export default function ArtistDetailPage() {
                             />
                         </Button>
 
+                        <Button
+                            asChild
+                            variant="ghost"
+                            onClick={() => {
+                                songs.forEach(song => {
+                                    const track = songToTrack(song);
+                                    addToQueue(track);
+                                });
+                            }}
+                            className="hover:bg-transparent hover:opacity-100 transition cursor-pointer p-0">
+                            <Image
+                                src="/icons/addtoqueue.svg"
+                                alt="Add Queue"
+                                width={22}
+                                height={22}
+                                draggable={false}
+                                className="opacity-80"
+                            />
+                        </Button>
+
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button
@@ -232,16 +252,6 @@ export default function ArtistDetailPage() {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent>
-                                <DropdownMenuItem
-                                    onClick={() => {
-                                        songs.forEach(song => {
-                                            const track = songToTrack(song);
-                                            addToQueue(track);
-                                        });
-                                    }}
-                                >
-                                    Add All to Queue
-                                </DropdownMenuItem>
                                 <DropdownMenuItem
                                     onClick={handleArtistFavorite}
                                 >
