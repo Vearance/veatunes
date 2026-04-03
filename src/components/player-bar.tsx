@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { formatDuration } from "@/lib/song-utils";
+import { MicVocal } from "lucide-react";
 
 export function PlayerBar() {
     const {
@@ -39,7 +40,7 @@ export function PlayerBar() {
         setVolume,
         toggleMute,
     } = usePlayer();
-    const { queueOpen, toggleQueue, isMobile } = useUI();
+    const { queueOpen, toggleQueue, lyricsOpen, toggleLyrics, isMobile } = useUI();
 
     // const audioRef = useRef<HTMLAudioElement | null>(null);
     const [progressPercent, setProgressPercent] = useState(0);
@@ -294,6 +295,14 @@ export function PlayerBar() {
                     </div>
 
                     <div className="w-[1.5px] h-6 bg-muted" />
+
+                    <Button
+                        variant="ghost"
+                        onClick={toggleLyrics}
+                        className={`h-5 w-5 p-0 hover:bg-transparent cursor-pointer select-none ${lyricsOpen ? 'opacity-100' : 'opacity-60'}`}
+                    >
+                        <MicVocal size={18} className="text-white" />
+                    </Button>
 
                     <Button
                         asChild

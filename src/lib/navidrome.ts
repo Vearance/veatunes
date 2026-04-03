@@ -132,6 +132,20 @@ export interface MusicFolder {
     name: string;
 }
 
+export interface LyricsLine {
+    start?: number; // ms timestamp (present when synced)
+    value: string;
+}
+
+export interface StructuredLyrics {
+    displayArtist?: string;
+    displayTitle?: string;
+    lang: string;
+    offset?: number; // ms offset to apply
+    synced: boolean;
+    line: LyricsLine[];
+}
+
 export default class NavidromeAPI {
     private config: NavidromeConfig;
     private clientName = 'veatunes';
@@ -483,6 +497,17 @@ export default class NavidromeAPI {
                 .slice(0, limit);
         } catch (error) {
             console.error('Failed to get artist top songs:', error);
+            return [];
+        }
+    }
+
+    async getLyricsBySongId(songId: string): Promise<StructuredLyrics[]> {
+        try {
+            const response = await this.makeRequest('getLyricsBySongId', { id: songId });
+            const lyricsData = response.lyricsList as { structuredLyrics?: StructuredLyrics[] } | undefined;
+            return lyricsData?.structuredLyrics || [];
+        } catch (error) {
+            console.error('Failed to get lyrics:', error);
             return [];
         }
     }
