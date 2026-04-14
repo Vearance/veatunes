@@ -10,7 +10,7 @@ import { X, MicVocal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function LyricsPanel() {
-    const { currentTrack, audioRef } = usePlayer();
+    const { currentTrack, audioRef, seekTo } = usePlayer();
     const { getLyrics } = useNavidrome();
     const { lyricsOpen, toggleLyrics } = useUI();
 
@@ -200,6 +200,7 @@ export function LyricsPanel() {
                             const isActive = lyrics.synced && index === activeLineIndex;
                             const isPast = lyrics.synced && activeLineIndex >= 0 && index < activeLineIndex;
                             const isEmpty = !line.value.trim();
+                            const isClickable = lyrics.synced && line.start !== undefined;
 
                             if (isEmpty) {
                                 return <div key={index} className="h-8" />;
@@ -209,14 +210,20 @@ export function LyricsPanel() {
                                 <p
                                     key={index}
                                     ref={isActive ? activeLineRef : null}
+                                    onClick={() => {
+                                        if (isClickable) {
+                                            seekTo((line.start! + (lyrics.offset ?? 0)) / 1000);
+                                        }
+                                    }}
                                     className={`
                                         text-center py-2 px-4 rounded-lg transition-all duration-500 ease-out w-full max-w-2xl
+                                        ${isClickable ? "cursor-pointer hover:brightness-125" : ""}
                                         ${lyrics.synced
                                             ? isActive
                                                 ? "text-white text-2xl md:text-3xl font-bold scale-[1.02]"
                                                 : isPast
-                                                    ? "text-zinc-600 text-lg md:text-xl font-medium"
-                                                    : "text-zinc-500 text-lg md:text-xl font-medium"
+                                                    ? "text-zinc-600 text-lg md:text-xl font-medium hover:text-zinc-400"
+                                                    : "text-zinc-500 text-lg md:text-xl font-medium hover:text-zinc-300"
                                             : "text-zinc-300 text-base md:text-lg font-normal"
                                         }
                                     `}
