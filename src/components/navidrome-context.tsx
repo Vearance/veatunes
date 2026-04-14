@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { getNavidromeAPI, Album, Artist, Song, Playlist, AlbumInfo, ArtistInfo, MusicFolder } from '@/lib/navidrome';
+import { getNavidromeAPI, Album, Artist, Song, Playlist, AlbumInfo, ArtistInfo, MusicFolder, StructuredLyrics } from '@/lib/navidrome';
 import { useCallback } from 'react';
 
 interface NavidromeContextType {
@@ -44,6 +44,7 @@ interface NavidromeContextType {
     starItem: (id: string, type: 'song' | 'album' | 'artist') => Promise<void>;
     unstarItem: (id: string, type: 'song' | 'album' | 'artist') => Promise<void>;
     scrobble: (songId: string) => Promise<void>;
+    getLyrics: (songId: string) => Promise<StructuredLyrics[]>;
 }
 
 const NavidromeContext = createContext<NavidromeContextType | undefined>(undefined);
@@ -409,6 +410,16 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
         }
     };
 
+    const getLyrics = useCallback(async (songId: string): Promise<StructuredLyrics[]> => {
+        if (!api) return [];
+        try {
+            return await api.getLyricsBySongId(songId);
+        } catch (err) {
+            console.error('Failed to get lyrics:', err);
+            return [];
+        }
+    }, [api]);
+
     useEffect(() => {
         let isMounted = true;
 
@@ -482,7 +493,8 @@ export const NavidromeProvider: React.FC<NavidromeProviderProps> = ({ children }
         deletePlaylist,
         starItem,
         unstarItem,
-        scrobble
+        scrobble,
+        getLyrics
     };
 
     return (

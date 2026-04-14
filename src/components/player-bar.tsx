@@ -8,6 +8,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { formatDuration } from "@/lib/song-utils";
+import { MicVocal } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export function PlayerBar() {
     const {
@@ -39,7 +41,7 @@ export function PlayerBar() {
         setVolume,
         toggleMute,
     } = usePlayer();
-    const { queueOpen, toggleQueue, isMobile } = useUI();
+    const { queueOpen, toggleQueue, lyricsOpen, toggleLyrics, isMobile } = useUI();
 
     // const audioRef = useRef<HTMLAudioElement | null>(null);
     const [progressPercent, setProgressPercent] = useState(0);
@@ -115,7 +117,7 @@ export function PlayerBar() {
     return (
         <>
             {/* Desktop player bar */}
-            <div className="hidden md:grid fixed bottom-0 left-0 right-0 z-50 m-[26px] max-h-[90px] bg-playerbar backdrop-blur-xs rounded-2xl p-2.5 grid-cols-[375px_1fr_375px] items-center">
+            <div className="hidden md:grid fixed bottom-0 left-0 right-0 z-[70] m-[26px] max-h-[90px] bg-playerbar backdrop-blur-xs rounded-2xl p-2.5 grid-cols-[375px_1fr_375px] items-center">
                 <div className="flex items-center gap-4">
                     <div className="relative w-[70px] h-[70px] rounded-xl overflow-hidden bg-zinc-800 shrink-0">
                         <Image
@@ -162,7 +164,7 @@ export function PlayerBar() {
                                 asChild
                                 variant="ghost"
                                 onClick={toggleShuffle}
-                                className={`h-6 w-6 p-0 hover:bg-transparent cursor-pointer select-none ${shuffle ? 'opacity-100' : 'opacity-40'}`}
+                                className={cn("h-6 w-6 p-0 hover:bg-transparent cursor-pointer select-none", shuffle ? 'opacity-100' : 'opacity-40')}
                             >
                                 <Image
                                     src="/icons/shuffle.svg"
@@ -230,7 +232,7 @@ export function PlayerBar() {
                                 asChild
                                 variant="ghost"
                                 onClick={toggleRepeat}
-                                className={`h-6 w-6 p-0 hover:bg-transparent cursor-pointer select-none relative ${repeat !== 'off' ? 'opacity-100' : 'opacity-40'}`}
+                                className={cn("h-6 w-6 p-0 hover:bg-transparent cursor-pointer select-none relative", repeat !== 'off' ? 'opacity-100' : 'opacity-40')}
                             >
                                 <div className="relative">
                                     <Image
@@ -296,10 +298,18 @@ export function PlayerBar() {
                     <div className="w-[1.5px] h-6 bg-muted" />
 
                     <Button
+                        variant="ghost"
+                        onClick={toggleLyrics}
+                        className={cn("h-5 w-5 p-0 hover:bg-transparent cursor-pointer select-none", lyricsOpen ? 'opacity-100' : 'opacity-60')}
+                    >
+                        <MicVocal size={24} className="text-white" />
+                    </Button>
+
+                    <Button
                         asChild
                         variant="ghost"
                         onClick={toggleQueue}
-                        className={`h-5 w-5 p-0 hover:bg-transparent cursor-pointer select-none ${queueOpen ? 'opacity-100' : 'opacity-60'}`}
+                        className={cn("h-5 w-5 p-0 hover:bg-transparent cursor-pointer select-none", queueOpen ? 'opacity-100' : 'opacity-60')}
                     >
                         <Image
                             src="/icons/queue.svg"
@@ -327,7 +337,7 @@ export function PlayerBar() {
             </div>
 
             {/* Mobile player bar */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-playerbar backdrop-blur-md">
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-[70] bg-playerbar backdrop-blur-md">
                 {/* progress bar at top of mobile player */}
                 <div className="w-full h-[3px] bg-zinc-700/50">
                     <div
