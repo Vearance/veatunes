@@ -116,7 +116,7 @@ export function PlayerBar() {
     return (
         <>
             {/* Desktop player bar */}
-            <div className="hidden md:grid fixed bottom-0 left-0 right-0 z-50 m-[26px] max-h-[90px] bg-playerbar backdrop-blur-xs rounded-2xl p-2.5 grid-cols-[375px_1fr_375px] items-center">
+            <div className="hidden md:grid fixed bottom-0 left-0 right-0 z-[70] m-[26px] max-h-[90px] bg-playerbar backdrop-blur-xs rounded-2xl p-2.5 grid-cols-[375px_1fr_375px] items-center">
                 <div className="flex items-center gap-4">
                     <div className="relative w-[70px] h-[70px] rounded-xl overflow-hidden bg-zinc-800 shrink-0">
                         <Image
@@ -336,7 +336,7 @@ export function PlayerBar() {
             </div>
 
             {/* Mobile player bar */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-playerbar backdrop-blur-md">
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-[70] bg-playerbar backdrop-blur-md">
                 {/* progress bar at top of mobile player */}
                 <div className="w-full h-[3px] bg-zinc-700/50">
                     <div
