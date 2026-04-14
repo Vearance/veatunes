@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { formatDuration } from "@/lib/song-utils";
 import { MicVocal } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export function PlayerBar() {
     const {
@@ -163,7 +164,7 @@ export function PlayerBar() {
                                 asChild
                                 variant="ghost"
                                 onClick={toggleShuffle}
-                                className={`h-6 w-6 p-0 hover:bg-transparent cursor-pointer select-none ${shuffle ? 'opacity-100' : 'opacity-40'}`}
+                                className={cn("h-6 w-6 p-0 hover:bg-transparent cursor-pointer select-none", shuffle ? 'opacity-100' : 'opacity-40')}
                             >
                                 <Image
                                     src="/icons/shuffle.svg"
@@ -231,7 +232,7 @@ export function PlayerBar() {
                                 asChild
                                 variant="ghost"
                                 onClick={toggleRepeat}
-                                className={`h-6 w-6 p-0 hover:bg-transparent cursor-pointer select-none relative ${repeat !== 'off' ? 'opacity-100' : 'opacity-40'}`}
+                                className={cn("h-6 w-6 p-0 hover:bg-transparent cursor-pointer select-none relative", repeat !== 'off' ? 'opacity-100' : 'opacity-40')}
                             >
                                 <div className="relative">
                                     <Image
@@ -299,16 +300,16 @@ export function PlayerBar() {
                     <Button
                         variant="ghost"
                         onClick={toggleLyrics}
-                        className={`h-5 w-5 p-0 hover:bg-transparent cursor-pointer select-none ${lyricsOpen ? 'opacity-100' : 'opacity-60'}`}
+                        className={cn("h-5 w-5 p-0 hover:bg-transparent cursor-pointer select-none", lyricsOpen ? 'opacity-100' : 'opacity-60')}
                     >
-                        <MicVocal size={18} className="text-white" />
+                        <MicVocal size={24} className="text-white" />
                     </Button>
 
                     <Button
                         asChild
                         variant="ghost"
                         onClick={toggleQueue}
-                        className={`h-5 w-5 p-0 hover:bg-transparent cursor-pointer select-none ${queueOpen ? 'opacity-100' : 'opacity-60'}`}
+                        className={cn("h-5 w-5 p-0 hover:bg-transparent cursor-pointer select-none", queueOpen ? 'opacity-100' : 'opacity-60')}
                     >
                         <Image
                             src="/icons/queue.svg"

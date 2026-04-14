@@ -8,6 +8,7 @@ import { StructuredLyrics } from "@/lib/navidrome";
 import Image from "next/image";
 import { X, MicVocal } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function LyricsPanel() {
     const { currentTrack, audioRef, seekTo } = usePlayer();
@@ -215,18 +216,14 @@ export function LyricsPanel() {
                                             seekTo((line.start! + (lyrics.offset ?? 0)) / 1000);
                                         }
                                     }}
-                                    className={`
-                                        text-center py-2 px-4 rounded-lg transition-all duration-500 ease-out w-full max-w-2xl
-                                        ${isClickable ? "cursor-pointer hover:brightness-125" : ""}
-                                        ${lyrics.synced
-                                            ? isActive
-                                                ? "text-white text-2xl md:text-3xl font-bold scale-[1.02]"
-                                                : isPast
-                                                    ? "text-zinc-600 text-lg md:text-xl font-medium hover:text-zinc-400"
-                                                    : "text-zinc-500 text-lg md:text-xl font-medium hover:text-zinc-300"
-                                            : "text-zinc-300 text-base md:text-lg font-normal"
-                                        }
-                                    `}
+                                    className={cn(
+                                        "text-center py-2 px-4 rounded-lg transition-all duration-500 ease-out w-full max-w-2xl",
+                                        isClickable && "cursor-pointer hover:brightness-125",
+                                        lyrics.synced && isActive && "text-white text-2xl md:text-3xl font-bold scale-[1.02]",
+                                        lyrics.synced && isPast && "text-zinc-600 text-lg md:text-xl font-medium hover:text-zinc-400",
+                                        lyrics.synced && !isActive && !isPast && "text-zinc-500 text-lg md:text-xl font-medium hover:text-zinc-300",
+                                        !lyrics.synced && "text-zinc-300 text-base md:text-lg font-normal"
+                                    )}
                                     style={{
                                         transform: isActive ? "scale(1.02)" : "scale(1)",
                                     }}
