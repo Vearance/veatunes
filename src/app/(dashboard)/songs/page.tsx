@@ -299,7 +299,7 @@ export default function SongsPage() {
                     </button>
                     <button
                         onClick={() => handleSort("duration")}
-                        className="w-12 text-right hover:text-zinc-300 transition-colors cursor-pointer mr-0 md:mr-12"
+                        className="w-12 text-right hover:text-zinc-300 transition-colors cursor-pointer"
                     >
                         Time{sortArrow("duration")}
                     </button>
@@ -383,47 +383,47 @@ export default function SongsPage() {
                                         </Link>
                                     </div>
 
-                                    {/* duration */}
-                                    <span className="text-zinc-500 text-sm w-12 text-right">
-                                        {formatDuration(song.duration)}
-                                    </span>
-
-                                    {/* actions */}
-                                    <div
-                                        className="hidden sm:flex gap-1 ml-2 opacity-0 group-hover:opacity-100 has-[button[data-state=open]]:opacity-100 transition-opacity"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
+                                    {/* actions: like, duration, more */}
+                                    <div className="flex items-center gap-4 text-sm text-zinc-400">
                                         <Button
-                                            onClick={() => handleSongFavorite(song)}
+                                            asChild
                                             variant="ghost"
-                                            size="sm"
-                                            className="w-7 h-7 p-0 hover:bg-transparent"
-                                        >
+                                            className="hover:opacity-100 transition hover:bg-transparent cursor-pointer p-0 mr-4"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleSongFavorite(song);
+                                            }}>
                                             {song.starred ? (
                                                 <Image
                                                     src="/icons/heartfilled.svg"
-                                                    alt="Favorited"
-                                                    width={16}
-                                                    height={16}
+                                                    alt="Heart"
+                                                    width={18}
+                                                    height={18}
                                                 />
                                             ) : (
                                                 <Image
                                                     src="/icons/heart.svg"
-                                                    alt="Favorite"
-                                                    width={16}
-                                                    height={16}
-                                                    className="opacity-60"
+                                                    alt="Heart"
+                                                    width={18}
+                                                    height={18}
+                                                    className="opacity-80"
                                                 />
                                             )}
                                         </Button>
+
+                                        <span className="text-right min-w-[3.5ch]">
+                                            {formatDuration(song.duration)}
+                                        </span>
+
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    className="w-7 h-7 p-0 hover:bg-transparent"
+                                                    className="w-7 h-7 p-0 ml-2 hover:bg-transparent opacity-0 group-hover:opacity-100 data-[state=open]:opacity-100 transition-opacity cursor-pointer"
+                                                    onClick={(e) => e.stopPropagation()}
                                                 >
-                                                    <MoreHorizontal className="w-4 h-4 text-zinc-400" />
+                                                    <MoreHorizontal className="w-5 h-5 text-zinc-200" />
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent>
