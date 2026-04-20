@@ -3,6 +3,7 @@
 import Header from "@/components/header";
 import Sidebar from "@/components/sidebar";
 import { QueuePanel } from "@/components/queue-panel";
+import { LyricsPanel } from "@/components/lyrics-panel";
 // import { ScrollArea } from "@/components/ui/scroll-area";
 
 // BUG: For some particular reason, the icons in the child (page.tsx) doesn't place well with scrollarea by shadcn - thus we use custom scrollbar.
@@ -19,6 +20,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 </main>
                 <QueuePanel />
             </div>
+            <LyricsPanel />
         </div>
     );
 }

@@ -7,6 +7,8 @@ interface UIContextType {
     toggleSidebar: () => void;
     queueOpen: boolean;
     toggleQueue: () => void;
+    lyricsOpen: boolean;
+    toggleLyrics: () => void;
     isMobile: boolean;
     mobileSidebarOpen: boolean;
     setMobileSidebarOpen: (open: boolean) => void;
@@ -18,6 +20,7 @@ const UIContext = createContext<UIContextType | undefined>(undefined);
 export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
     const [queueOpen, setQueueOpen] = useState(false);
+    const [lyricsOpen, setLyricsOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
@@ -28,6 +31,7 @@ export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
             setIsMobile(e.matches);
             if (e.matches) {
                 setQueueOpen(false);
+                setLyricsOpen(false);
                 setMobileSidebarOpen(false);
             }
         };
@@ -72,7 +76,15 @@ export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         if (isMobile) {
             setMobileSidebarOpen(false);
         }
+        setLyricsOpen(false);
         setQueueOpen(prev => !prev);
+    }, [isMobile]);
+    const toggleLyrics = useCallback(() => {
+        if (isMobile) {
+            setMobileSidebarOpen(false);
+        }
+        setQueueOpen(false);
+        setLyricsOpen(prev => !prev);
     }, [isMobile]);
     const toggleMobileSidebar = useCallback(() => {
         setQueueOpen(false);
@@ -80,7 +92,7 @@ export const UIProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     }, []);
 
     return (
-        <UIContext.Provider value={{ sidebarCollapsed, toggleSidebar, queueOpen, toggleQueue, isMobile, mobileSidebarOpen, setMobileSidebarOpen, toggleMobileSidebar }}>
+        <UIContext.Provider value={{ sidebarCollapsed, toggleSidebar, queueOpen, toggleQueue, lyricsOpen, toggleLyrics, isMobile, mobileSidebarOpen, setMobileSidebarOpen, toggleMobileSidebar }}>
             {children}
         </UIContext.Provider>
     );
